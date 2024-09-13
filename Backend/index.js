@@ -5,6 +5,7 @@ const app = express();
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const db = require('./configs/db.configs.js');
+const path = require('path');
 
 // Middleware (session)
 app.use(
@@ -22,6 +23,16 @@ app.use(
 );
 
 app.use(express.static('public'));
+
+// Route for index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Route for add-data.html
+app.get('/add-data', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'add-data.html')); 
+});
 
 // Routing TABEL REKAP DATA K3
 // Menampilkan seluruh data dari Tabel

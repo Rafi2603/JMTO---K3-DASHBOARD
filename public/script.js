@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.showItems.forEach(item => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
+                        <td>${item.no || ''}</td>
                         <td>${item.bulan || ''}</td>
                         <td>${item.jumlah_karyawan_ops || ''}</td>
                         <td>${item.jumlah_karyawan_non_ops || ''}</td>
