@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekap Data K3 JAGORAWI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" rel="stylesheet">
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Rekap Data K3 JAGORAWI</h1>
+        <div class="mb-4">
+            <!-- Button to navigate to Add Data Page -->
+            <a href="/add-data-jagorawi.html" class="btn btn-primary">Tambah Data Baru</a>
+            <!-- Button to navigate to Update Data Page -->
+            <a href="/update-data-jagorawi.html" class="btn btn-primary">Update Data K3 (belumjadi)</a>
+        </div>
+    
+        <table id="data-table" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Bulan</th>
+                    <th>Jumlah Karyawan OPS</th>
+                    <th>Jumlah Karyawan Non-OPS</th>
+                    <th>Jumlah Hari Kerja OPS</th>
+                    <th>Jumlah Hari Kerja Non-OPS</th>
+                    <th>Jumlah Jam Kerja</th>
+                    <th>Kecelakaan Berat OPS</th>
+                    <th>Kecelakaan Berat Non-OPS</th>
+                    <th>Kecelakaan Ringan OPS</th>
+                    <th>Kecelakaan Ringan Non-OPS</th>
+                    <th>Kecelakaan Meninggal OPS</th>
+                    <th>Kecelakaan Meninggal Non-OPS</th>
+                    <th>Kecelakaan Near Miss OPS</th>
+                    <th>Kecelakaan Near Miss Non-OPS</th>
+                    <th>Fire Accident OPS</th>
+                    <th>Fire Accident Non-OPS</th>
+                    <th>Damaged Property OPS</th>
+                    <th>Damaged Property Non-OPS</th>
+                    <th>Jumlah Hari Hilang OPS</th>
+                    <th>Jumlah Hari Hilang Non-OPS</th>
+                    <th>Jumlah Hari Tanpa Hilang OPS</th>
+                    <th>Jumlah Hari Tanpa Hilang Non-OPS</th>
+                    <th>LTI OPS</th>
+                    <th>LTI Non-OPS</th>
+                    <th>Man Hour OPS</th>
+                    <th>Man Hour Non-OPS</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data tabel akan diisi oleh script.js -->
+            </tbody>
+        </table>
+    
+        <div class="grid-container">
+            <!-- Personel K3 Data Table -->
+            <div class="grid-item">
+                <h2>Personel K3 Data</h2>
+                <div class="mb-4">
+                    <!-- Button to navigate to Add Data Page -->
+                    <a href="/add-personel-k3-jagorawi.html" class="btn btn-primary">Tambah Data Personel Baru</a>
+                    <!-- Button to navigate to Update Data Page -->
+                    <a href="/update-personel-k3-jagorawi.html" class="btn btn-primary">Update Data Personel</a>
+                </div>
+                
+                <table id="personel-k3-table" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                            <th>Role</th>
+                            <th>Batas Masa Berlaku</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>  
+            </div>
+    
+            <!-- Rekap Data Kecelakaan Kerja Table -->
+            <div class="grid-item">
+                <h2>Rekap Data Kecelakaan Kerja</h2>
+                <div class="mb-4">
+                    <!-- Button to navigate to Add Data Page -->
+                    <a href="/add-kecelakaan-jagorawi.html" class="btn btn-primary">Tambah Data Kecelakaan Baru</a>
+                    <!-- Button to navigate to Update Data Page -->
+                    <a href="/update-kecelakaan-jagorawi.html" class="btn btn-primary">Update Data Kecelakaan</a>
+                </div>
+                <table id="kecelakaan-kerja-table" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>NIK</th>
+                            <th>Nama</th>
+                            <th>Jabatan</th>
+                            <th>Ruas</th>
+                            <th>Kronologis</th>
+                            <th>Kategori Kecelakaan</th>
+                            <th>Tindak Lanjut</th>
+                            <th>Perawatan di RS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data kecelakaan kerja akan diisi oleh script -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .grid-container {
+            display: grid;
+            grid-template-columns: 100fr 100fr;
+            grid-gap: 20px; /* Optional: space between the columns */
+            margin-top: 20px;
+        }
+    
+        .grid-item {
+            width: 1345px;
+        }
+    
+        /* Optional: Adjust table width for better alignment */
+        table {
+            width: 100%;
+        }
+    </style>
+    
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Your custom script -->
+    <script src="script-jagorawi.js"></script>
+</body>
+</html>

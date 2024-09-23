@@ -34,3 +34,8 @@ VALUES
     1500, 
     1300  
 );
+
+INSERT INTO kecelakaan_kerja_jagorawi 
+(Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS) 
+VALUES 
+('2023-09-15', '1234567890', 'Pekerja 1', 'Supervisor', 'JAGORAWI', 'Kecelakaan terjadi saat bekerja di lapangan.', 'Ringan', 'Memberikan istirahat selama 2 hari', '2023-09-16');

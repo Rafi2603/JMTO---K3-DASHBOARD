@@ -20,7 +20,7 @@ CREATE TYPE MonthEnum AS ENUM (
 CREATE TABLE personel_k3 (
     personel_k3_id SERIAL PRIMARY KEY,           
     nama VARCHAR(100),     
-    role profesi,      
+    role_personel_k3 VARCHAR(100),      
     batas_masa_berlaku DATE 
 );
 
@@ -77,7 +77,11 @@ CREATE TABLE rekap_data_k3 (
 );
 
 
-
+CREATE TABLE akun_ruas (
+    ruas_id SERIAL PRIMARY KEY,
+    ruas VARCHAR(100),
+    pass_ruas TEXT
+);
 
 
 

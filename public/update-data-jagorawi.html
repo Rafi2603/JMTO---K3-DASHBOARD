@@ -3,16 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tambah Data K3</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Update Rekap Data K3</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
-        <h2>Tambah Data K3</h2>
-        <form action="/adddata" method="POST" class="mt-4">
+        <h2 class="text-center mb-4">Update Rekap Data K3 Jagorawi</h2>
+        <form id="updateRekapDataForm">
+            <div class="mb-3">
+                <label for="no" class="form-label">Nomor Data K3</label>
+                <input type="number" class="form-control" id="no" name="no" required>
+            </div>
             <div class="mb-3">
                 <label for="bulan" class="form-label">Bulan</label>
-                <!-- Dropdown untuk pilihan bulan -->
                 <select class="form-control" id="bulan" name="bulan" required>
                     <option value="" disabled selected>Pilih Bulan</option>
                     <option value="January">January</option>
@@ -169,6 +172,62 @@
 
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+
+        <div id="message" class="mt-4"></div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script>
+
+        document.getElementById('updateRekapDataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+        // Mengambil nilai form
+        const data = {
+            no: document.getElementById('no').value,
+            bulan: document.getElementById('bulan').value,
+            jumlah_karyawan_ops: document.getElementById('jumlah_karyawan_ops').value,
+            jumlah_karyawan_non_ops: document.getElementById('jumlah_karyawan_non_ops').value,
+            jumlah_hari_kerja_ops: document.getElementById('jumlah_hari_kerja_ops').value,
+            jumlah_hari_kerja_non_ops: document.getElementById('jumlah_hari_kerja_non_ops').value,
+            jumlah_jam_kerja: document.getElementById('jumlah_jam_kerja').value,
+            kecelakaan_berat_ops: document.getElementById('kecelakaan_berat_ops').value,
+            kecelakaan_berat_non_ops: document.getElementById('kecelakaan_berat_non_ops').value,
+            kecelakaan_ringan_ops: document.getElementById('kecelakaan_ringan_ops').value,
+            kecelakaan_ringan_non_ops: document.getElementById('kecelakaan_ringan_non_ops').value,
+            kecelakaan_meninggal_ops: document.getElementById('kecelakaan_meninggal_ops').value,
+            kecelakaan_meninggal_non_ops: document.getElementById('kecelakaan_meninggal_non_ops').value,
+            kecelakaan_near_miss_ops: document.getElementById('kecelakaan_near_miss_ops').value,
+            kecelakaan_near_miss_non_ops: document.getElementById('kecelakaan_near_miss_non_ops').value,
+            fire_accident_ops: document.getElementById('fire_accident_ops').value,
+            fire_accident_non_ops: document.getElementById('fire_accident_non_ops').value,
+            damaged_property_ops: document.getElementById('damaged_property_ops').value,
+            damaged_property_non_ops: document.getElementById('damaged_property_non_ops').value,
+            jumlah_hari_hilang_ops: document.getElementById('jumlah_hari_hilang_ops').value,
+            jumlah_hari_hilang_non_ops: document.getElementById('jumlah_hari_hilang_non_ops').value,
+            jumlah_hari_tanpa_hilang_ops: document.getElementById('jumlah_hari_tanpa_hilang_ops').value,
+            jumlah_hari_tanpa_hilang_non_ops: document.getElementById('jumlah_hari_tanpa_hilang_non_ops').value,
+            lti_ops: document.getElementById('lti_ops').value,
+            lti_non_ops: document.getElementById('lti_non_ops').value,
+            man_hour_ops: document.getElementById('man_hour_ops').value,
+            man_hour_non_ops: document.getElementById('man_hour_non_ops').value
+        };
+
+            axios.put(`/updaterekapdatajagorawi`, data)
+                .then(response => {
+                    if (response.data.message === 'Update Success') {
+                        alert('Data updated successfully!');
+                        window.location.href = '/rekap-data-jagorawi.html'; // Redirect on success
+                    } else {
+                        alert('Update failed.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred during the update.');
+                });
+        });
+    </script>
 </body>
 </html>

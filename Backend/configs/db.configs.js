@@ -19,7 +19,7 @@ db.connect((err) => {
         console.error(err);
         return;
     }
-    console.log('Database PinjamDong Connected');
+    console.log('Database JMTO Connected');
 });
 
 module.exports = db
