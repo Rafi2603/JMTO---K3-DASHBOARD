@@ -103,6 +103,18 @@ router.get('/getkecelakaanjagorawi', (req, res) => {
 });
 
 
+// Menampilkan seluruh kecelakaan dari Tabel Jagorawi
+router.get('/getkejadianjagorawi', (req, res) => {
+    db.query('SELECT * FROM kejadian_darurat_jagorawi', (err, results) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        res.json({ message: 'Data Found', showItems: results.rows });
+    });
+});
+
+
 // Menampilkan seluruh kecelakaan dari Tabel Cipularang
 router.get('/getkecelakaancipularang', (req, res) => {
     db.query('SELECT * FROM personel_k3_cipularang', (err, results) => {
@@ -117,107 +129,52 @@ router.get('/getkecelakaancipularang', (req, res) => {
 
 
 // Routing TABEL REKAP DATA K3
-// Menambahkan data baru ke dalam Tabel 
-router.post('/adddata', (req, res) => {
-    const {
-        bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops, jumlah_jam_kerja,
-        kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops, kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops,
-        kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops, fire_accident_ops, fire_accident_non_ops, damaged_property_ops, damaged_property_non_ops,
-        jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops, jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops
-    } = req.body;
-
-    const query = `
-        INSERT INTO rekap_data_k3 (
-            bulan, 
-            jumlah_karyawan_ops, 
-            jumlah_karyawan_non_ops, 
-            jumlah_hari_kerja_ops, 
-            jumlah_hari_kerja_non_ops, 
-            jumlah_jam_kerja,
-            kecelakaan_berat_ops, 
-            kecelakaan_berat_non_ops, 
-            kecelakaan_ringan_ops, 
-            kecelakaan_ringan_non_ops, 
-            kecelakaan_meninggal_ops, 
-            kecelakaan_meninggal_non_ops,
-            kecelakaan_near_miss_ops, 
-            kecelakaan_near_miss_non_ops, 
-            fire_accident_ops, 
-            fire_accident_non_ops, 
-            damaged_property_ops, 
-            damaged_property_non_ops,
-            jumlah_hari_hilang_ops, 
-            jumlah_hari_hilang_non_ops, 
-            jumlah_hari_tanpa_hilang_ops, 
-            jumlah_hari_tanpa_hilang_non_ops, 
-            lti_ops, 
-            lti_non_ops, 
-            man_hour_ops, 
-            man_hour_non_ops)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)
-    `;
-    const values = [
-        bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops, jumlah_jam_kerja,
-        kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops, kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops,
-        kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops, fire_accident_ops, fire_accident_non_ops, damaged_property_ops, damaged_property_non_ops,
-        jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops, jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops
-    ];
-
-    db.query(query, values, (err, result) => {
-        if (err) {
-            console.log(err);
-            res.status(500).json({ message: 'Database Error' });
-            return;
-        }
-        res.json({ message: 'Data Added Successfully' });
-    });
-});
-
-
+// Menambahkan data baru ke dalam Tabel Jagorawi
+// Route untuk menambahkan data
 // Menambahkan data baru ke dalam Tabel Jagorawi
 router.post('/adddatajagorawi', (req, res) => {
     const {
-        bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops, jumlah_jam_kerja,
-        kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops, kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops,
-        kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops, fire_accident_ops, fire_accident_non_ops, damaged_property_ops, damaged_property_non_ops,
-        jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops, jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops
+        bulan,
+        jumlah_karyawan_ops,
+        jumlah_karyawan_non_ops,
+        jumlah_hari_kerja_ops,
+        jumlah_hari_kerja_non_ops,
+        jumlah_jam_kerja,
+        kecelakaan_berat_ops,
+        kecelakaan_berat_non_ops,
+        kecelakaan_ringan_ops,
+        kecelakaan_ringan_non_ops,
+        kecelakaan_meninggal_ops,
+        kecelakaan_meninggal_non_ops,
+        kecelakaan_near_miss_ops,
+        kecelakaan_near_miss_non_ops,
+        fire_accident,
+        damaged_property,
+        jumlah_hari_hilang_ops,
+        jumlah_hari_hilang_non_ops,
+        jumlah_hari_tanpa_hilang_ops,
+        jumlah_hari_tanpa_hilang_non_ops,
+        lti_ops,
+        lti_non_ops,
+        man_hour_ops,
+        man_hour_non_ops
     } = req.body;
 
     const query = `
         INSERT INTO rekap_data_k3_jagorawi (
-            bulan, 
-            jumlah_karyawan_ops, 
-            jumlah_karyawan_non_ops, 
-            jumlah_hari_kerja_ops, 
-            jumlah_hari_kerja_non_ops, 
-            jumlah_jam_kerja,
-            kecelakaan_berat_ops, 
-            kecelakaan_berat_non_ops, 
-            kecelakaan_ringan_ops, 
-            kecelakaan_ringan_non_ops, 
-            kecelakaan_meninggal_ops, 
-            kecelakaan_meninggal_non_ops,
-            kecelakaan_near_miss_ops, 
-            kecelakaan_near_miss_non_ops, 
-            fire_accident_ops, 
-            fire_accident_non_ops, 
-            damaged_property_ops, 
-            damaged_property_non_ops,
-            jumlah_hari_hilang_ops, 
-            jumlah_hari_hilang_non_ops, 
-            jumlah_hari_tanpa_hilang_ops, 
-            jumlah_hari_tanpa_hilang_non_ops, 
-            lti_ops, 
-            lti_non_ops, 
-            man_hour_ops, 
-            man_hour_non_ops)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26)
+                bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
+                jumlah_jam_kerja, kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops,
+                kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops, kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops,
+                fire_accident, damaged_property, jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops,
+                jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
     `;
     const values = [
-        bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops, jumlah_jam_kerja,
-        kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops, kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops,
-        kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops, fire_accident_ops, fire_accident_non_ops, damaged_property_ops, damaged_property_non_ops,
-        jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops, jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops
+        bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
+        jumlah_jam_kerja, kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops,
+        kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops, kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops,
+        fire_accident, damaged_property, jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops,
+        jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops
     ];
 
     db.query(query, values, (err, result) => {
@@ -277,6 +234,27 @@ router.post('/addpersoneljagorawi', (req, res) => {
 });
 
 
+// Menambahkan personel baru ke dalam Tabel Jagorawi
+router.post('/addkejadianjagorawi', (req, res) => {
+    const { kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence } = req.body;
+    
+    // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
+    const query = `
+        INSERT INTO kejadian_darurat_jagorawi (kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence) 
+            VALUES ($1, $2, $3, $4, $5)
+    `;
+
+    // Eksekusi query dengan parameter dari request body
+    db.query(query, [kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence])
+        .then(() => {
+            res.status(200).json({ message: 'Success' });
+        })
+        .catch((error) => {
+            console.error('Error inserting data:', error);
+            res.status(500).json({ message: 'Error inserting data' });
+        });
+});
+
 
 // Mengupdate data personel berdasarkan personel_k3_id
 // Route untuk memperbarui data personel K3
@@ -292,6 +270,29 @@ router.put('/updatepersoneljagorawi', (req, res) => {
 
     // Eksekusi query dengan parameter dari request body
     db.query(query, [nama, role_personel_k3, batas_masa_berlaku, personel_k3_id])
+        .then(() => {
+            res.status(200).json({ message: 'Update Success' });
+        })
+        .catch((error) => {
+            console.error('Error updating data:', error);
+            res.status(500).json({ message: 'Error updating data' });
+        });
+});
+
+
+// Route untuk memperbarui data kejadian K3
+router.put('/updatekejadianjagorawi', (req, res) => {
+    const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence } = req.body;
+
+    // Query untuk memperbarui data berdasarkan ID
+    const query = `
+        UPDATE kejadian_darurat_jagorawi 
+             SET kejadian_darurat = $1, lokasi = $2, kronologi_kejadian = $3, tindak_lanjut = $4, evidence = $5
+             WHERE kejadian_darurat_id = $6 
+    `;
+
+    // Eksekusi query dengan parameter dari request body
+    db.query(query, [kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence, kejadian_darurat_id])
         .then(() => {
             res.status(200).json({ message: 'Update Success' });
         })
@@ -330,33 +331,50 @@ router.put('/updatekecelakaanjagorawi', (req, res) => {
 // Update rekap data k3 entry
 router.put('/updaterekapdatajagorawi', (req, res) => {
     const {
-        no, bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
-        jumlah_jam_kerja, kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops,
-        kecelakaan_ringan_non_ops, kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops, kecelakaan_near_miss_ops,
-        kecelakaan_near_miss_non_ops, fire_accident_ops, fire_accident_non_ops, damaged_property_ops, damaged_property_non_ops,
-        jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops, jumlah_hari_tanpa_hilang_non_ops,
-        lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops
+        bulan,
+        jumlah_karyawan_ops,
+        jumlah_karyawan_non_ops,
+        jumlah_hari_kerja_ops,
+        jumlah_hari_kerja_non_ops,
+        jumlah_jam_kerja,
+        kecelakaan_berat_ops,
+        kecelakaan_berat_non_ops,
+        kecelakaan_ringan_ops,
+        kecelakaan_ringan_non_ops,
+        kecelakaan_meninggal_ops,
+        kecelakaan_meninggal_non_ops,
+        kecelakaan_near_miss_ops,
+        kecelakaan_near_miss_non_ops,
+        fire_accident,
+        damaged_property,
+        jumlah_hari_hilang_ops,
+        jumlah_hari_hilang_non_ops,
+        jumlah_hari_tanpa_hilang_ops,
+        jumlah_hari_tanpa_hilang_non_ops,
+        lti_ops,
+        lti_non_ops,
+        man_hour_ops,
+        man_hour_non_ops,
+        no
     } = req.body;
 
     const query = `
-        UPDATE rekap_data_k3_jagorawi
-        SET bulan = $1, jumlah_karyawan_ops = $2, jumlah_karyawan_non_ops = $3, jumlah_hari_kerja_ops = $4, jumlah_hari_kerja_non_ops = $5, 
-            jumlah_jam_kerja = $6, kecelakaan_berat_ops = $7, kecelakaan_berat_non_ops = $8, kecelakaan_ringan_ops = $9, 
-            kecelakaan_ringan_non_ops = $10, kecelakaan_meninggal_ops = $11, kecelakaan_meninggal_non_ops = $12, 
-            kecelakaan_near_miss_ops = $13, kecelakaan_near_miss_non_ops = $14, fire_accident_ops = $15, fire_accident_non_ops = $16, 
-            damaged_property_ops = $17, damaged_property_non_ops = $18, jumlah_hari_hilang_ops = $19, jumlah_hari_hilang_non_ops = $20, 
-            jumlah_hari_tanpa_hilang_ops = $21, jumlah_hari_tanpa_hilang_non_ops = $22, lti_ops = $23, lti_non_ops = $24, 
-            man_hour_ops = $25, man_hour_non_ops = $26
-        WHERE no = $27
+        UPDATE rekap_data_k3_jagorawi SET
+                bulan = $1, jumlah_karyawan_ops = $2, jumlah_karyawan_non_ops = $3, jumlah_hari_kerja_ops = $4, jumlah_hari_kerja_non_ops = $5,
+                jumlah_jam_kerja = $6, kecelakaan_berat_ops = $7, kecelakaan_berat_non_ops = $8, kecelakaan_ringan_ops = $9, kecelakaan_ringan_non_ops = $10,
+                kecelakaan_meninggal_ops = $11, kecelakaan_meninggal_non_ops = $12, kecelakaan_near_miss_ops = $13, kecelakaan_near_miss_non_ops = $14,
+                fire_accident = $15, damaged_property = $16, jumlah_hari_hilang_ops = $17, jumlah_hari_hilang_non_ops = $18, jumlah_hari_tanpa_hilang_ops = $19,
+                jumlah_hari_tanpa_hilang_non_ops = $20, lti_ops = $21, lti_non_ops = $22, man_hour_ops = $23, man_hour_non_ops = $24
+            WHERE no = $25
     `;
 
     db.query(query, [
         bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
-        jumlah_jam_kerja, kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops,
-        kecelakaan_ringan_non_ops, kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops, kecelakaan_near_miss_ops,
-        kecelakaan_near_miss_non_ops, fire_accident_ops, fire_accident_non_ops, damaged_property_ops, damaged_property_non_ops,
-        jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops, jumlah_hari_tanpa_hilang_non_ops,
-        lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops, no
+        jumlah_jam_kerja, kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops,
+        kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops, kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops,
+        fire_accident, damaged_property, jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops,
+        jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops, no
+    
     ])
         .then(() => {
             res.status(200).json({ message: 'Update Success' });
@@ -368,6 +386,79 @@ router.put('/updaterekapdatajagorawi', (req, res) => {
 });
 
 
+
+router.delete('/deletedatajagorawi', (req, res) => {
+    //const no = req.params.id;
+
+    const {no} = req.body
+    // Lakukan penghapusan data dari database
+    const query = `DELETE FROM rekap_data_k3_jagorawi WHERE no = $1`;
+    
+    db.query(query, [no], (error, result) => {
+        if (error) {
+            console.error('Error deleting data:', error);
+            return res.status(500).send('Gagal menghapus data');
+        }
+
+        res.send('Data berhasil dihapus');
+    });
+});
+
+
+
+router.delete('/deletepersoneljagorawi', (req, res) => {
+    //const no = req.params.id;
+
+    const {personel_k3_id} = req.body
+    // Lakukan penghapusan data dari database
+    const query = `DELETE FROM personel_k3_jagorawi WHERE personel_k3_id = $1`;
+    
+    db.query(query, [personel_k3_id], (error, result) => {
+        if (error) {
+            console.error('Error deleting data:', error);
+            return res.status(500).send('Gagal menghapus data');
+        }
+
+        res.send('Data berhasil dihapus');
+    });
+});
+
+
+
+router.delete('/deletekecelakaanjagorawi', (req, res) => {
+    //const no = req.params.id;
+
+    const {kecelakaan_kerja_id} = req.body
+    // Lakukan penghapusan data dari database
+    const query = `DELETE FROM kecelakaan_kerja_jagorawi WHERE kecelakaan_kerja_id = $1`;
+    
+    db.query(query, [kecelakaan_kerja_id], (error, result) => {
+        if (error) {
+            console.error('Error deleting data:', error);
+            return res.status(500).send('Gagal menghapus data');
+        }
+
+        res.send('Data berhasil dihapus');
+    });
+});
+
+
+router.delete('/deletekejadianjagorawi', (req, res) => {
+    //const no = req.params.id;
+
+    const {kejadian_darurat_id} = req.body
+    // Lakukan penghapusan data dari database
+    const query = `DELETE FROM kejadian_darurat_jagorawi WHERE kejadian_darurat_id = $1`;
+    
+    db.query(query, [kejadian_darurat_id], (error, result) => {
+        if (error) {
+            console.error('Error deleting data:', error);
+            return res.status(500).send('Gagal menghapus data');
+        }
+
+        res.send('Data berhasil dihapus');
+    });
+});
 
 
 //Login Page

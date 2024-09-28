@@ -3,26 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard K3 - Struktur Organisasi</title>
+    <title>Rekap Data K3 JAGORAWI</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- DataTables CSS -->
     <link href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'Amonos Display';
-            src: url('Fonts/amonosdisplay-regular.otf') format('truetype');
-            font-weight: 10000; /* Extra Bold */
-            
-        }
-
-        h1 {
-            font-family: 'Amonos Display', sans-serif;
-            font-weight: 800;
-            color: #0056b3;
-            font-size: 30px; /* Ukuran font */
-
-        }
         body {
             background-color: #f0f2f5;
             font-family: Arial, sans-serif;
@@ -119,7 +105,6 @@
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-custom">
-        
         <a class="navbar-brand" href="#">
             <img src="jasamarga_cover-removebg-preview.png" alt="Logo Perusahaan"> <!-- Logo Perusahaan -->
             
@@ -129,7 +114,6 @@
         </button>
         
         <div class="collapse navbar-collapse" id="navbarNav">
-            <h1>JAGORAWI</h1>
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="#rekapData">Rekap Data K3</a>
@@ -378,33 +362,6 @@
             <button class="btn btn-success" id="export-buttonKejadian" class="btn btn-primary mb-3">Export to Excel</button>
         </div>
 
- <!-- Modal Konfirmasi Hapus -->
-<div class="modal fade" id="deleteModalKejadian" tabindex="-1" aria-labelledby="deleteModalLabelKejadian" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteModalLabelKejadian">Konfirmasi Penghapusan</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Apakah Anda yakin ingin menghapus data ini?
-                <form id="deleteForm">
-                    <div class="form-group">
-                        <label for="kejadian_darurat_id">Masukkan ID/No data:</label>
-                        <input type="number" class="form-control" id="kejadian_darurat_id" placeholder="Masukkan ID atau No data yang ingin dihapus" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-danger" onclick="deleteKejadian()">Hapus</button>
-            </div>
-        </div>
-    </div>
-</div>
-
         <table id="kejadian-kerja-table" class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -570,42 +527,6 @@
     }
 </script>
 
-
-<script>
-    function showDeleteModalKejadian() {
-        $('#deleteModalKejadian').modal('show'); // Tampilkan modal pop-up
-    }
-    
-    function deleteKejadian() {
-        const kejadian_darurat_id = document.getElementById('kejadian_darurat_id').value; // Ambil ID dari input modal
-    
-        if (!kejadian_darurat_id) {
-            alert("Mohon masukkan ID atau No data yang ingin dihapus.");
-            return;
-        }
-    
-        // Gunakan Axios untuk mengirim permintaan hapus
-        axios.delete(`/deletekejadianjagorawi`, { 
-            data: { kejadian_darurat_id: kejadian_darurat_id } // Mengirimkan data ID untuk dihapus
-        })
-        .then(function (response) {
-            if (response.data.message === "Delete Success") {
-                alert("Data berhasil dihapus.");
-                // Refresh tabel atau hapus baris dari DOM
-                location.reload();
-            } else {
-                alert("Data tidak ditemukan atau gagal dihapus.");
-            }
-        })
-        .catch(function (error) {
-            alert("Terjadi kesalahan saat menghapus data.");
-            console.error(error);
-        });
-    
-        // Tutup modal setelah penghapusan
-        $('#deleteModal').modal('hide');
-    }
-</script>
 
     <script>
         document.getElementById('export-button').addEventListener('click', function() {

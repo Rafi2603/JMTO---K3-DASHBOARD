@@ -7,13 +7,13 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
+            background: linear-gradient(135deg, #ffdd00 50%, #0047ab 50%);
         }
 
         .login-container {
@@ -21,13 +21,22 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 300px;
+            width: 350px;
             text-align: center;
+        }
+
+        .login-logo {
+            margin-bottom: 20px;
+        }
+
+        .login-logo img {
+            width: 150px;
+            height: auto;
         }
 
         .login-container h2 {
             margin-bottom: 20px;
-            color: #333;
+            color: #0047ab;
         }
 
         .login-container form {
@@ -48,8 +57,8 @@
         }
 
         .login-container button {
-            background-color: #4caf50;
-            color: #fff;
+            background-color: #0047ab; /* Biru */
+            color: #ffdd00; /* Kuning */
             padding: 10px;
             border: none;
             border-radius: 4px;
@@ -58,14 +67,34 @@
         }
 
         .login-container button:hover {
-            background-color: #45a049;
+            background-color: #003b8b; /* Biru lebih gelap */
+        }
+
+        .warning-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .login-container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            .login-logo img {
+                width: 120px;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="login-container">
-        <h1 class="login-title">Login</h1>
+        <div class="login-logo">
+            <img src="jmto-logo.png" alt="Logo Perusahaan">
+        </div>
+        <h1 class="login-title" style="color: #0047ab;">Login</h1>
         <div class="login-input">
             <input id="username" type="text" placeholder="Ruas" required>
             <input id="password" type="password" placeholder="Password" required>

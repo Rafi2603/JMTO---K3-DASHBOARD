@@ -25,10 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${item.kecelakaan_meninggal_non_ops || ''}</td>
                         <td>${item.kecelakaan_near_miss_ops || ''}</td>
                         <td>${item.kecelakaan_near_miss_non_ops || ''}</td>
-                        <td>${item.fire_accident_ops || ''}</td>
-                        <td>${item.fire_accident_non_ops || ''}</td>
-                        <td>${item.damaged_property_ops || ''}</td>
-                        <td>${item.damaged_property_non_ops || ''}</td>
+                        <td>${item.fire_accident || ''}</td>
+                        <td>${item.damaged_property || ''}</td>
                         <td>${item.jumlah_hari_hilang_ops || ''}</td>
                         <td>${item.jumlah_hari_hilang_non_ops || ''}</td>
                         <td>${item.jumlah_hari_tanpa_hilang_ops || ''}</td>
@@ -37,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${item.lti_non_ops || ''}</td>
                         <td>${item.man_hour_ops || ''}</td>
                         <td>${item.man_hour_non_ops || ''}</td>
+                        <td>${item.fr || ''}</td>
                     `;
                     tableBody.appendChild(row);
                 });
@@ -105,6 +104,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 $('#kecelakaan-kerja-table').DataTable();
             } else {
                 console.error('Personel K3 Data not found');
+            }
+        })
+        .catch(error => console.error('Error fetching Personel K3 data:', error));
+
+            // Fetch data for Personel K3
+    fetch('http://localhost:3000/getkejadianjagorawi')
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === 'Data Found') {
+                const kejadiankerjaTableBody = document.querySelector('#kejadian-kerja-table tbody');
+                kejadiankerjaTableBody.innerHTML = ''; // Clear existing rows
+
+                data.showItems.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${item.kejadian_darurat_id || ''}</td>
+                        <td>${item.kejadian_darurat || ''}</td>
+                        <td>${item.lokasi || ''}</td>
+                        <td>${item.kronologi_kejadian || ''}</td>
+                        <td>${item.tindak_lanjut || ''}</td>
+                        <td>${item.evidence || ''}</td>
+                    `;
+                    kejadiankerjaTableBody.appendChild(row);
+                });
+
+                // Inisialisasi DataTables untuk tabel Personel K3
+                $('#kejadian-kerja-table').DataTable();
+            } else {
+                console.error('Kejadian kerja K3 Data not found');
             }
         })
         .catch(error => console.error('Error fetching Personel K3 data:', error));

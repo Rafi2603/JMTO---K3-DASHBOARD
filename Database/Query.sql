@@ -62,10 +62,8 @@ CREATE TABLE rekap_data_k3 (
     kecelakaan_meninggal_non_ops INT,
     kecelakaan_near_miss_ops INT,
     kecelakaan_near_miss_non_ops INT,
-    fire_accident_ops INT,
-    fire_accident_non_ops INT,
-    damaged_property_ops INT,
-    damaged_property_non_ops INT,
+    fire_accident INT,
+    damaged_property INT,
     jumlah_hari_hilang_ops INT,
     jumlah_hari_hilang_non_ops INT,
     jumlah_hari_tanpa_hilang_ops INT,
@@ -74,6 +72,7 @@ CREATE TABLE rekap_data_k3 (
     lti_non_ops INT,
     man_hour_ops INT,
     man_hour_non_ops INT
+    fr INT
 );
 
 

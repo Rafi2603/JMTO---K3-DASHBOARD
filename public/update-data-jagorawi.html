@@ -9,7 +9,8 @@
 <body>
     <div class="container mt-5">
         <h2 class="text-center mb-4">Update Rekap Data K3 Jagorawi</h2>
-        <form id="updateRekapDataForm">
+        <form id="updateRekapDataForm" class="mt-4">
+            <!-- Form fields remain the same -->
             <div class="mb-3">
                 <label for="no" class="form-label">Nomor Data K3</label>
                 <input type="number" class="form-control" id="no" name="no" required>
@@ -106,23 +107,14 @@
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="fire_accident_ops" class="form-label">Fire Accident OPS</label>
-                    <input type="number" class="form-control" id="fire_accident_ops" name="fire_accident_ops" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="fire_accident_non_ops" class="form-label">Fire Accident Non-OPS</label>
-                    <input type="number" class="form-control" id="fire_accident_non_ops" name="fire_accident_non_ops" required>
-                </div>
+                    <label for="fire_accident" class="form-label">Fire Accident</label>
+                    <input type="number" class="form-control" id="fire_accident" name="fire_accident" required>
             </div>
 
             <div class="row">
                 <div class="col-md-6 mb-3">
-                    <label for="damaged_property_ops" class="form-label">Damaged Property OPS</label>
-                    <input type="number" class="form-control" id="damaged_property_ops" name="damaged_property_ops" required>
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="damaged_property_non_ops" class="form-label">Damaged Property Non-OPS</label>
-                    <input type="number" class="form-control" id="damaged_property_non_ops" name="damaged_property_non_ops" required>
+                    <label for="damaged_property" class="form-label">Damaged Property</label>
+                    <input type="number" class="form-control" id="damaged_property" name="damaged_property" required>
                 </div>
             </div>
 
@@ -200,10 +192,8 @@
             kecelakaan_meninggal_non_ops: document.getElementById('kecelakaan_meninggal_non_ops').value,
             kecelakaan_near_miss_ops: document.getElementById('kecelakaan_near_miss_ops').value,
             kecelakaan_near_miss_non_ops: document.getElementById('kecelakaan_near_miss_non_ops').value,
-            fire_accident_ops: document.getElementById('fire_accident_ops').value,
-            fire_accident_non_ops: document.getElementById('fire_accident_non_ops').value,
-            damaged_property_ops: document.getElementById('damaged_property_ops').value,
-            damaged_property_non_ops: document.getElementById('damaged_property_non_ops').value,
+            fire_accident: document.getElementById('fire_accident').value,
+            damaged_property: document.getElementById('damaged_property').value,
             jumlah_hari_hilang_ops: document.getElementById('jumlah_hari_hilang_ops').value,
             jumlah_hari_hilang_non_ops: document.getElementById('jumlah_hari_hilang_non_ops').value,
             jumlah_hari_tanpa_hilang_ops: document.getElementById('jumlah_hari_tanpa_hilang_ops').value,
