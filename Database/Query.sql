@@ -83,6 +83,11 @@ CREATE TABLE akun_ruas (
 );
 
 
+CREATE TABLE struktur_organisasi_jagorawi (
+    struktur_id SERIAL PRIMARY KEY  ,
+    nama VARCHAR(100) ,
+    jabatan VARCHAR(50) 
+);
 
 
 

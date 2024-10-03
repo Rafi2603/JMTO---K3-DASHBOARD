@@ -102,38 +102,41 @@
         <button id="submitbutton">Login</button>
         <div class="warning-message" id="warningMessage"></div>
     </div>
-
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         document.getElementById('submitbutton').addEventListener('click', async () => {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
+    
             try {
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ ruas: username, pass_ruas: password })
+                const response = await axios.post('/login', {
+                    ruas: username,
+                    pass_ruas: password
                 });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Redirect based on role
-                    if (data.showItems[0].ruas === 'Cipularang') {
-                        window.location.href = '/rekap-data-cipularang.html'; // Update with your admin page URL
-                    } else if (data.showItems[0].ruas === 'Jagorawi') {
-                        window.location.href = '/rekap-data-jagorawi.html'; // Update with your user page URL
-                    }
-                } else {
-                    document.getElementById('warningMessage').textContent = data;
+    
+                // Jika berhasil login
+                const data = response.data;
+    
+                // Redirect based on role and ruas
+                if (data.showItems[0].ruas === 'Cipularang') {
+                    window.location.href = '/rekap-data-cipularang.html'; // Update dengan URL admin page
+                } else if (data.showItems[0].ruas === 'Jagorawi') {
+                    window.location.href = '/rekap-data-jagorawi.html'; // Update dengan URL user page
                 }
             } catch (error) {
+                // Handle error response dari server
+                if (error.response) {
+                    document.getElementById('warningMessage').textContent = error.response.data;
+                } else {
+                    document.getElementById('warningMessage').textContent = 'An error occurred. Please try again.';
+                }
                 console.error('Error logging in:', error);
-                document.getElementById('warningMessage').textContent = 'An error occurred. Please try again.';
             }
         });
     </script>
+    
+
+
 </body>
 </html>

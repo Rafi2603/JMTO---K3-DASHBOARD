@@ -115,6 +115,17 @@ router.get('/getkejadianjagorawi', (req, res) => {
 });
 
 
+router.get('/getstrukturjagorawi', (req, res) => {
+    db.query('SELECT * FROM struktur_organisasi_jagorawi ORDER BY jabatan', (err, results) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        res.json({ message: 'Data Found', showItems: results.rows });
+    });
+});
+
+
 // Menampilkan seluruh kecelakaan dari Tabel Cipularang
 router.get('/getkecelakaancipularang', (req, res) => {
     db.query('SELECT * FROM personel_k3_cipularang', (err, results) => {
@@ -134,6 +145,7 @@ router.get('/getkecelakaancipularang', (req, res) => {
 // Menambahkan data baru ke dalam Tabel Jagorawi
 router.post('/adddatajagorawi', (req, res) => {
     const {
+        tahun,
         bulan,
         jumlah_karyawan_ops,
         jumlah_karyawan_non_ops,
@@ -162,15 +174,15 @@ router.post('/adddatajagorawi', (req, res) => {
 
     const query = `
         INSERT INTO rekap_data_k3_jagorawi (
-                bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
+                tahun, bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
                 jumlah_jam_kerja, kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops,
                 kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops, kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops,
                 fire_accident, damaged_property, jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops,
                 jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24)
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25)
     `;
     const values = [
-        bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
+        tahun, bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
         jumlah_jam_kerja, kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops,
         kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops, kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops,
         fire_accident, damaged_property, jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops,
@@ -331,6 +343,7 @@ router.put('/updatekecelakaanjagorawi', (req, res) => {
 // Update rekap data k3 entry
 router.put('/updaterekapdatajagorawi', (req, res) => {
     const {
+        tahun,
         bulan,
         jumlah_karyawan_ops,
         jumlah_karyawan_non_ops,
@@ -354,27 +367,25 @@ router.put('/updaterekapdatajagorawi', (req, res) => {
         lti_ops,
         lti_non_ops,
         man_hour_ops,
-        man_hour_non_ops,
-        no
+        man_hour_non_ops
     } = req.body;
 
     const query = `
         UPDATE rekap_data_k3_jagorawi SET
-                bulan = $1, jumlah_karyawan_ops = $2, jumlah_karyawan_non_ops = $3, jumlah_hari_kerja_ops = $4, jumlah_hari_kerja_non_ops = $5,
-                jumlah_jam_kerja = $6, kecelakaan_berat_ops = $7, kecelakaan_berat_non_ops = $8, kecelakaan_ringan_ops = $9, kecelakaan_ringan_non_ops = $10,
-                kecelakaan_meninggal_ops = $11, kecelakaan_meninggal_non_ops = $12, kecelakaan_near_miss_ops = $13, kecelakaan_near_miss_non_ops = $14,
-                fire_accident = $15, damaged_property = $16, jumlah_hari_hilang_ops = $17, jumlah_hari_hilang_non_ops = $18, jumlah_hari_tanpa_hilang_ops = $19,
-                jumlah_hari_tanpa_hilang_non_ops = $20, lti_ops = $21, lti_non_ops = $22, man_hour_ops = $23, man_hour_non_ops = $24
-            WHERE no = $25
+            jumlah_karyawan_ops = $1, jumlah_karyawan_non_ops = $2, jumlah_hari_kerja_ops = $3, jumlah_hari_kerja_non_ops = $4,
+            jumlah_jam_kerja = $5, kecelakaan_berat_ops = $6, kecelakaan_berat_non_ops = $7, kecelakaan_ringan_ops = $8, kecelakaan_ringan_non_ops = $9,
+            kecelakaan_meninggal_ops = $10, kecelakaan_meninggal_non_ops = $11, kecelakaan_near_miss_ops = $12, kecelakaan_near_miss_non_ops = $13,
+            fire_accident = $14, damaged_property = $15, jumlah_hari_hilang_ops = $16, jumlah_hari_hilang_non_ops = $17, jumlah_hari_tanpa_hilang_ops = $18,
+            jumlah_hari_tanpa_hilang_non_ops = $19, lti_ops = $20, lti_non_ops = $21, man_hour_ops = $22, man_hour_non_ops = $23
+        WHERE tahun = $24 AND bulan = $25
     `;
 
     db.query(query, [
-        bulan, jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
+        jumlah_karyawan_ops, jumlah_karyawan_non_ops, jumlah_hari_kerja_ops, jumlah_hari_kerja_non_ops,
         jumlah_jam_kerja, kecelakaan_berat_ops, kecelakaan_berat_non_ops, kecelakaan_ringan_ops, kecelakaan_ringan_non_ops,
         kecelakaan_meninggal_ops, kecelakaan_meninggal_non_ops, kecelakaan_near_miss_ops, kecelakaan_near_miss_non_ops,
         fire_accident, damaged_property, jumlah_hari_hilang_ops, jumlah_hari_hilang_non_ops, jumlah_hari_tanpa_hilang_ops,
-        jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops, no
-    
+        jumlah_hari_tanpa_hilang_non_ops, lti_ops, lti_non_ops, man_hour_ops, man_hour_non_ops, tahun, bulan
     ])
         .then(() => {
             res.status(200).json({ message: 'Update Success' });
@@ -385,6 +396,60 @@ router.put('/updaterekapdatajagorawi', (req, res) => {
         });
 });
 
+
+// PUT route to update the organizational structure
+router.put('/updatestrukturjagorawi', (req, res) => {
+    const { ketua, sekretaris, anggota1, anggota2, anggota3, anggota4, anggota5 } = req.body;
+
+    // SQL query to update the structure
+    const query = `
+        UPDATE struktur_organisasi_jagorawi
+        SET nama = CASE 
+            WHEN jabatan = 'Ketua' THEN $1
+            WHEN jabatan = 'Sekretaris' THEN $2
+            WHEN jabatan = 'Anggota 1' THEN $3
+            WHEN jabatan = 'Anggota 2' THEN $4
+            WHEN jabatan = 'Anggota 3' THEN $5
+            WHEN jabatan = 'Anggota 4' THEN $6
+            WHEN jabatan = 'Anggota 5' THEN $7
+        END
+        WHERE jabatan IN ('Ketua', 'Sekretaris', 'Anggota 1', 'Anggota 2', 'Anggota 3', 'Anggota 4', 'Anggota 5')
+    `;
+
+    // Execute the query with the provided data
+    db.query(query, [ketua, sekretaris, anggota1, anggota2, anggota3, anggota4, anggota5])
+        .then(() => {
+            res.status(200).json({ message: 'Update Success' });
+        })
+        .catch(error => {
+            console.error('Error updating organizational structure:', error);
+            res.status(500).json({ message: 'Error updating organizational structure' });
+        });
+});
+
+
+router.put('/nullifydatajagorawi', (req, res) => {
+    const { tahun, bulan } = req.body;
+
+    const query = `
+        UPDATE rekap_data_k3_jagorawi SET
+            jumlah_karyawan_ops = NULL, jumlah_karyawan_non_ops = NULL, jumlah_hari_kerja_ops = NULL, jumlah_hari_kerja_non_ops = NULL,
+            jumlah_jam_kerja = NULL, kecelakaan_berat_ops = NULL, kecelakaan_berat_non_ops = NULL, kecelakaan_ringan_ops = NULL, kecelakaan_ringan_non_ops = NULL,
+            kecelakaan_meninggal_ops = NULL, kecelakaan_meninggal_non_ops = NULL, kecelakaan_near_miss_ops = NULL, kecelakaan_near_miss_non_ops = NULL,
+            fire_accident = NULL, damaged_property = NULL, jumlah_hari_hilang_ops = NULL, jumlah_hari_hilang_non_ops = NULL, jumlah_hari_tanpa_hilang_ops = NULL,
+            jumlah_hari_tanpa_hilang_non_ops = NULL, lti_ops = NULL, lti_non_ops = NULL, man_hour_ops = NULL, man_hour_non_ops = NULL
+        WHERE tahun = $1 AND bulan = $2
+    `;
+
+    db.query(query, [tahun, bulan], (error, result) => {
+        if (error) {
+            console.error('Error updating data:', error);
+            return res.status(500).send('Gagal mengubah data menjadi NULL');
+        }
+
+        res.send(`Data berhasil diubah menjadi NULL untuk tahun ${tahun} dan bulan ${bulan}`);
+    });
+});
 
 
 router.delete('/deletedatajagorawi', (req, res) => {
@@ -461,10 +526,10 @@ router.delete('/deletekejadianjagorawi', (req, res) => {
 });
 
 
-//Login Page
 router.post('/login', async (req, res) => {
     const { ruas, pass_ruas } = req.body;
     const query = 'SELECT ruas, pass_ruas, userrole FROM akun_ruas WHERE ruas = $1;';
+    
     db.query(query, [ruas], (err, results) => {
       if (err) {
         return res.status(500).send('Internal Server Error');
@@ -479,18 +544,32 @@ router.post('/login', async (req, res) => {
   
       if (pass_ruas === storedPassword) {
         if (userRole === 'admin' || userRole === 'user') {
+          // Set session setelah login berhasil
           req.session.userRole = userRole;
-            return res.status(200).json({
-                message: "Login successful", showItems: results.rows
-            });
+          req.session.ruas = ruas;
+          req.session.isLoggedIn = true; // Tandai bahwa user telah login
+          
+          return res.status(200).json({
+              message: "Login successful",
+              showItems: results.rows
+          });
         } else {
-            return res.status(401).send('Hanya user dan admin yang dapat login');
+          return res.status(401).send('Hanya user dan admin yang dapat login');
         }
-      } 
-      return res.status(401).send('Password salah');
+      } else {
+        return res.status(401).send('Password salah');
+      }
     });
 });
 
+router.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.status(500).send('Logout failed');
+        }
+        res.send('Logout successful');
+    });
+});
 
 
 app.get('/session', (req, res) => {
