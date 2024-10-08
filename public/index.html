@@ -110,7 +110,7 @@
             const password = document.getElementById('password').value;
     
             try {
-                const response = await axios.post('/login', {
+                const response = await axios.post('http://localhost:3000/login', {
                     ruas: username,
                     pass_ruas: password
                 });
@@ -119,10 +119,10 @@
                 const data = response.data;
     
                 // Redirect based on role and ruas
-                if (data.showItems[0].ruas === 'Cipularang') {
-                    window.location.href = '/rekap-data-cipularang.html'; // Update dengan URL admin page
-                } else if (data.showItems[0].ruas === 'Jagorawi') {
-                    window.location.href = '/rekap-data-jagorawi.html'; // Update dengan URL user page
+                if (data.showItems[0].ruas == 'Cipularang') {
+                    window.location.href = 'http://localhost:3000/rekap-data-cipularang.html'; // Update dengan URL admin page
+                } else if (data.showItems[0].ruas == 'Jagorawi') {
+                    window.location.href = 'http://localhost:3000/rekap-data-jagorawi.html'; // Update dengan URL user page
                 }
             } catch (error) {
                 // Handle error response dari server
