@@ -447,7 +447,7 @@ router.put('/updaterekapdatajagorawi', (req, res) => {
         jumlah_karyawan_non_ops,
         jumlah_hari_kerja_ops,
         jumlah_hari_kerja_non_ops,
-        jumlah_jam_kerja,
+        
         kecelakaan_berat_ops,
         kecelakaan_berat_non_ops,
         kecelakaan_ringan_ops,
@@ -459,16 +459,39 @@ router.put('/updaterekapdatajagorawi', (req, res) => {
         fire_accident,
         damaged_property,
         jumlah_hari_hilang_ops,
-        jumlah_hari_hilang_non_ops,
-        jumlah_hari_tanpa_hilang_ops,
-        jumlah_hari_tanpa_hilang_non_ops,
-        lti_ops,
-        lti_non_ops,
-        man_hour_ops,
-        man_hour_non_ops
+        jumlah_hari_hilang_non_ops
+        
     } = req.body;
 
-    // Calculate FR dynamically
+    // Calculate some datas dynamically
+    const jumlah_jam_kerja = (
+        (jumlah_hari_kerja_ops + jumlah_hari_kerja_non_ops) / 2 * 8
+    )
+
+    const jumlah_hari_tanpa_hilang_ops = (
+        (jumlah_karyawan_ops * jumlah_hari_kerja_ops)
+    )
+
+    const jumlah_hari_tanpa_hilang_non_ops = (
+        (jumlah_karyawan_non_ops * jumlah_hari_kerja_non_ops)
+    )
+
+    const lti_ops = (
+        (jumlah_hari_hilang_ops * 8)
+    )
+
+    const lti_non_ops = (
+        (jumlah_hari_hilang_non_ops * 8)
+    )
+
+    const man_hour_ops = (
+        (jumlah_karyawan_ops * 8) * jumlah_hari_kerja_ops
+    )
+
+    const man_hour_non_ops = (
+        (jumlah_karyawan_non_ops * 8) * jumlah_hari_kerja_non_ops
+    )
+
     const fr = (
         (kecelakaan_berat_ops + kecelakaan_berat_non_ops + kecelakaan_ringan_ops +
         kecelakaan_ringan_non_ops + kecelakaan_meninggal_ops + kecelakaan_meninggal_non_ops +
