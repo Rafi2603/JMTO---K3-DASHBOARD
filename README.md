@@ -32,7 +32,6 @@
 │   └── db.js           # Koneksi dan query ke PostgreSQL
 ├── public/
 │   ├── index.html      # Halaman utama untuk menampilkan tabel rekap K3
-│   ├── add-data.html   # Halaman untuk menambahkan data baru
 │   ├── script.js       # JavaScript frontend
 │   └── style.css       # CSS tambahan
 └── README.md           # Dokumentasi project
@@ -40,7 +39,7 @@
 
 ## Instalasi
 1. **Clone repository ini:**: 
-git clone https://github.com/username/repository-name.git
+git clone https://github.com/Rafi2603/JMTO---K3-DASHBOARD.git
 
 2. **Masuk ke direktori project:**
 cd repository-name
@@ -48,17 +47,10 @@ cd repository-name
 3. **Install dependencies:**
 npm install
 
-4. **Siapkan file .env untuk konfigurasi koneksi ke PostgreSQL:**
-- DB_USER=your_database_user,
-- DB_PASSWORD=your_database_password,
-- DB_HOST=your_database_host,
-- DB_PORT=your_database_port,
-- DB_NAME=your_database_name
-
-5. **Jalankan server:**
+4. **Jalankan server:**
 node Backend/index.js
 
-6. **Akses aplikasi di browser:**
+5. **Akses aplikasi di browser:**
 http://localhost:3000
 
 
