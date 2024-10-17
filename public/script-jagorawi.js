@@ -207,7 +207,7 @@ fetch('http://localhost:3000/getkecelakaanjagorawi')
                         <td>${item.lokasi || ''}</td>
                         <td>${item.kronologi_kejadian || ''}</td>
                         <td>${item.tindak_lanjut || ''}</td>
-                        <td>${item.evidence || ''}</td>
+                        <td>${item.evidence ? `<img src="data:image/jpeg;base64,${item.evidence}" alt="Evidence" width="100" />` : 'No Image'}</td>
                     `;
                     kejadiankerjaTableBody.appendChild(row);
                 });
@@ -260,27 +260,31 @@ fetch('http://localhost:3000/getkecelakaanjagorawi')
                     <td>${item.checklist_id}</td>
                     <td>${item.section}</td>
                     <td>${item.indikator_k3}</td>
-                    <td>${item.jumlah_item}</td>
-                    <td>${item.expired_date}</td>
-                    <td>${item.check_list_pemeriksaan}</td>
-                    <td>${item.rambu_apar}</td>
-                    <td>${item.kelengkapan_box_hydrant}</td>
-                    <td>${item.ruang_laktasi}</td>
-                    <td>${item.ruang_p3k}</td>
-                    <td>${item.organik}</td>
-                    <td>${item.non_organik}</td>
-                    <td>${item.limbah_b3}</td>
-                    <td>${item.smoking_area}</td>
-                    <td>${item.dll}</td>
+
+                    <td>${item.expired_date ? `<img src="data:image/jpeg;base64,${item.expired_date}" alt="Expired Date" width="200" />` : 'No Image'}</td>
+                    <td>${item.check_list_pemeriksaan ? `<img src="data:image/jpeg;base64,${item.check_list_pemeriksaan}" alt="Check List Pemeriksaan" width="200" />` : 'No Image'}</td>
+                    <td>${item.rambu_apar ? `<img src="data:image/jpeg;base64,${item.rambu_apar}" alt="Rambu Apar" width="200" />` : 'No Image'}</td>
+                    <td>${item.kelengkapan_box_hydrant ? `<img src="data:image/jpeg;base64,${item.kelengkapan_box_hydrant}" alt="Kelengkapan Box Hydrant" width="200" />` : 'No Image'}</td>
+                    <td>${item.ruang_laktasi ? `<img src="data:image/jpeg;base64,${item.ruang_laktasi}" alt="Ruang Laktasi" width="200" />` : 'No Image'}</td>
+                    <td>${item.ruang_p3k ? `<img src="data:image/jpeg;base64,${item.ruang_p3k}" alt="Ruang P3K" width="200" />` : 'No Image'}</td>
+                    <td>${item.organik ? `<img src="data:image/jpeg;base64,${item.organik}" alt="Organik" width="200" />` : 'No Image'}</td>
+                    <td>${item.non_organik ? `<img src="data:image/jpeg;base64,${item.non_organik}" alt="Non Organik" width="200" />` : 'No Image'}</td>
+                    <td>${item.limbah_b3 ? `<img src="data:image/jpeg;base64,${item.limbah_b3}" alt="Limbah B3" width="100" />` : 'No Image'}</td>
+                    <td>${item.smoking_area ? `<img src="data:image/jpeg;base64,${item.smoking_area}" alt="Smoking Area" width="200" />` : 'No Image'}</td>
+                    <td>${item.dll ? `<img src="data:image/jpeg;base64,${item.dll}" alt="DLL" width="200" />` : 'No Image'}</td
+
                 `;
                 checklistTableBody.appendChild(row);
             });
 
-            // Inisialisasi DataTables untuk tabel Personel K3
+            // Inisialisasi DataTables untuk tabel Checklist K3
             $('#checklist-k3-table').DataTable();
         } else {
             console.error('Data Checklist K3 not found');
         }
     })
     .catch(error => console.error('Error fetching Data Checklist K3:', error));
+
+
+
 });

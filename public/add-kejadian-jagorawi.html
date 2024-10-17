@@ -93,32 +93,32 @@
 
     
     <script>
-        // Event listener untuk form submit
-        document.getElementById('addKejadianForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Mencegah form dikirim secara default
-            
-            // Ambil data dari form
-            const formData = new FormData(this);
+    document.getElementById('addKejadianForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Mencegah form dikirim secara default
+    
+    // Ambil data dari form
+    const formData = new FormData(this); // Ini otomatis mengambil file dan data lainnya
 
-            // Konversi FormData ke JSON
-            const formJSON = {};
-            formData.forEach((value, key) => formJSON[key] = value);
+    // Kirim data menggunakan Axios
+    axios.post('/addkejadianjagorawi', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data' // Pastikan tipe konten multipart
+        }
+    })
+    .then(response => {
+        console.log(response.data); // Debugging response dari server
+        if (response.data.message === "Success") {
+            window.location.href = 'http://localhost:3000/rekap-data-jagorawi.html'; // Redirect jika sukses
+        } else {
+            alert('Data submission failed.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred.');
+    });
+});
 
-            // Kirim data menggunakan Axios
-            axios.post('/addkejadianjagorawi', formJSON)
-                .then(response => {
-                    console.log(response.data); // Debugging response dari server
-                    if (response.data.message === "Success") {
-                        window.location.href = 'http://localhost:3000/rekap-data-jagorawi.html'; // Redirect jika sukses
-                    } else {
-                        alert('Data submission failed.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred.');
-                });
-        });
     </script>
 </body>
 </html>

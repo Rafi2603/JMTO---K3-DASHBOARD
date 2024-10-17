@@ -156,15 +156,82 @@ router.get('/getstrukturjagorawi', (req, res) => {
     });
 });
 
+// router.get('/getchecklistjagorawi', (req, res) => {
+//     db.query('SELECT * FROM checklist_k3_jagorawi', (err, results) => {
+//         if (err) {
+//             console.log(err);
+//             return;
+//         }
+//         res.json({ message: 'Data Found', showItems: results.rows });
+//     });
+// });
+
+
+// router.get('/getkejadianjagorawi', (req, res) => {
+//     const query = 'SELECT * FROM kejadian_darurat_jagorawi';
+//     db.query(query)
+//         .then(result => {
+//             const showItems = result.rows.map(row => {
+//                 // Convert BYTEA to Base64
+//                 const evidenceBase64 = row.evidence ? Buffer.from(row.evidence).toString('base64') : null;
+
+//                 return {
+//                     ...row,
+//                     evidence: evidenceBase64 // Set the encoded image
+//                 };
+//             });
+
+//             res.status(200).json({ message: 'Data Found', showItems });
+//         })
+//         .catch(error => {
+//             console.error('Error fetching data:', error);
+//             res.status(500).json({ message: 'Error fetching data' });
+//         });
+// });
+
 router.get('/getchecklistjagorawi', (req, res) => {
-    db.query('SELECT * FROM checklist_k3_jagorawi', (err, results) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        res.json({ message: 'Data Found', showItems: results.rows });
-    });
+    const query = 'SELECT * FROM checklist_k3_jagorawi';
+    db.query(query)
+        .then(result => {
+            const showItems = result.rows.map(row => {
+                // Convert BYTEA to Base64
+                const expired_dateBase64 = row.expired_date ? Buffer.from(row.expired_date).toString('base64') : null;
+                const check_list_pemeriksaanBase64 = row.check_list_pemeriksaan ? Buffer.from(row.check_list_pemeriksaan).toString('base64') : null;
+                const rambu_aparBase64 = row.rambu_apar ? Buffer.from(row.rambu_apar).toString('base64') : null;
+                const kelengkapan_box_hydrantBase64 = row.kelengkapan_box_hydrant ? Buffer.from(row.kelengkapan_box_hydrant).toString('base64') : null;
+                const ruang_laktasiBase64 = row.ruang_laktasi ? Buffer.from(row.ruang_laktasi).toString('base64') : null;
+                const ruang_p3kBase64 = row.ruang_p3k ? Buffer.from(row.ruang_p3k).toString('base64') : null;
+                const organikBase64 = row.organik ? Buffer.from(row.organik).toString('base64') : null;
+                const non_organikBase64 = row.non_organik ? Buffer.from(row.non_organik).toString('base64') : null;
+                const limbah_b3Base64 = row.limbah_b3 ? Buffer.from(row.limbah_b3).toString('base64') : null;
+                const smoking_areaBase64 = row.smoking_area ? Buffer.from(row.smoking_area).toString('base64') : null;
+                const dllBase64 = row.dll ? Buffer.from(row.dll).toString('base64') : null;
+
+                // Return all fields
+                return {
+                    ...row,
+                    expired_date: expired_dateBase64,
+                    check_list_pemeriksaan: check_list_pemeriksaanBase64,
+                    rambu_apar: rambu_aparBase64,
+                    kelengkapan_box_hydrant: kelengkapan_box_hydrantBase64,
+                    ruang_laktasi: ruang_laktasiBase64,
+                    ruang_p3k: ruang_p3kBase64,
+                    organik: organikBase64,
+                    non_organik: non_organikBase64,
+                    limbah_b3: limbah_b3Base64,
+                    smoking_area: smoking_areaBase64,
+                    dll: dllBase64
+                };
+            });
+
+            res.status(200).json({ message: 'Data Found', showItems });
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            res.status(500).json({ message: 'Error fetching data' });
+        });
 });
+
 
 
 
@@ -288,82 +355,140 @@ router.post('/addpersoneljagorawi', (req, res) => {
 });
 
 
-// Menambahkan personel baru ke dalam Tabel Jagorawi
-router.post('/addkejadianjagorawi', (req, res) => {
-    const { kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence } = req.body;
-    
-    // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
-    const query = `
-        INSERT INTO kejadian_darurat_jagorawi (kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence) 
-            VALUES ($1, $2, $3, $4, $5)
-    `;
+// Menambahkan KEJADIAN baru ke dalam Tabel Jagorawi
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() }); // Atur multer untuk menyimpan file di memori
 
-    // Eksekusi query dengan parameter dari request body
-    db.query(query, [kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence])
-        .then(() => {
-            res.status(200).json({ message: 'Success' });
-        })
-        .catch((error) => {
-            console.error('Error inserting data:', error);
-            res.status(500).json({ message: 'Error inserting data' });
-        });
+app.post('/addkejadianjagorawi', upload.single('evidence'), async (req, res) => {
+    const { kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
+    const evidence = req.file.buffer; // Ambil file dari multer (disimpan dalam buffer)
+
+    try {
+        await db.query('INSERT INTO kejadian_darurat_jagorawi (kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence) VALUES ($1, $2, $3, $4, $5)', 
+        [kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence]);
+
+        res.json({ message: "Success" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error saving data');
+    }
 });
 
 
-// Menambahkan personel baru ke dalam Tabel Jagorawi
-router.post('/addchecklistjagorawi', (req, res) => {
-    const { 
-        section,
-        indikator_k3,
-        jumlah_item,
-        expired_date,
-        check_list_Pemeriksaan,
-        rambu_apar,
-        kelengkapan_box_hydrant,
-        ruang_laktasi,
-        ruang_p3k,
-        organik,
-        non_organik,
-        limbah_b3,
-        smoking_area,
-        dll
-    } = req.body;
-    
-    // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
-    const query = `
-            INSERT INTO checklist_k3_jagorawi (
-            section, indikator_k3, jumlah_item, expired_date, 
-            check_list_Pemeriksaan, rambu_apar, kelengkapan_box_hydrant, 
-            ruang_laktasi, ruang_p3k, organik, non_organik, limbah_b3, 
-            smoking_area, dll
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
-    `;
 
-    // Eksekusi query dengan parameter dari request body
-    db.query(query, [
-        section,
-        indikator_k3,
-        jumlah_item,
-        expired_date,
-        check_list_Pemeriksaan,
-        rambu_apar,
-        kelengkapan_box_hydrant,
-        ruang_laktasi,
-        ruang_p3k,
-        organik,
-        non_organik,
-        limbah_b3,
-        smoking_area,
-        dll
-    ])
-        .then(() => {
-            res.status(200).json({ message: 'Success' });
-        })
-        .catch((error) => {
+
+// Menambahkan personel baru ke dalam Tabel Jagorawi
+// router.post('/addchecklistjagorawi', (req, res) => {
+//     const { 
+//         section,
+//         indikator_k3,
+//         jumlah_item,
+//         expired_date,
+//         check_list_Pemeriksaan,
+//         rambu_apar,
+//         kelengkapan_box_hydrant,
+//         ruang_laktasi,
+//         ruang_p3k,
+//         organik,
+//         non_organik,
+//         limbah_b3,
+//         smoking_area,
+//         dll
+//     } = req.body;
+    
+//     // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
+//     const query = `
+//             INSERT INTO checklist_k3_jagorawi (
+//             section, indikator_k3, jumlah_item, expired_date, 
+//             check_list_Pemeriksaan, rambu_apar, kelengkapan_box_hydrant, 
+//             ruang_laktasi, ruang_p3k, organik, non_organik, limbah_b3, 
+//             smoking_area, dll
+//         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+//     `;
+
+//     // Eksekusi query dengan parameter dari request body
+//     db.query(query, [
+//         section,
+//         indikator_k3,
+//         jumlah_item,
+//         expired_date,
+//         check_list_Pemeriksaan,
+//         rambu_apar,
+//         kelengkapan_box_hydrant,
+//         ruang_laktasi,
+//         ruang_p3k,
+//         organik,
+//         non_organik,
+//         limbah_b3,
+//         smoking_area,
+//         dll
+//     ])
+//         .then(() => {
+//             res.status(200).json({ message: 'Success' });
+//         })
+//         .catch((error) => {
+//             console.error('Error inserting data:', error);
+//             res.status(500).json({ message: 'Error inserting data' });
+//         });
+// });
+
+
+const uploadCHECKLIST = multer({ storage: multer.memoryStorage() }); // Menggunakan memori untuk penyimpanan sementara
+
+app.post('/addchecklistjagorawi', uploadCHECKLIST.fields([
+    { name: 'expired_date', maxCount: 1 },
+    { name: 'check_list_pemeriksaan', maxCount: 1 },
+    { name: 'rambu_apar', maxCount: 1 },
+    { name: 'kelengkapan_box_hydrant', maxCount: 1 },
+    { name: 'ruang_laktasi', maxCount: 1 },
+    { name: 'ruang_p3k', maxCount: 1 },
+    { name: 'organik', maxCount: 1 },
+    { name: 'non_organik', maxCount: 1 },
+    { name: 'limbah_b3', maxCount: 1 },
+    { name: 'smoking_area', maxCount: 1 },
+    { name: 'dll', maxCount: 1 }
+]), (req, res) => {
+    const section = req.body.section;
+    const indikator_k3 = req.body.indikator_k3;
+
+    // Ambil buffer gambar dari request
+    const expired_date = req.files['expired_date'] ? req.files['expired_date'][0].buffer : null;
+    const check_list_pemeriksaan = req.files['check_list_pemeriksaan'] ? req.files['check_list_pemeriksaan'][0].buffer : null;
+    const rambu_apar = req.files['rambu_apar'] ? req.files['rambu_apar'][0].buffer : null;
+    const kelengkapan_box_hydrant = req.files['kelengkapan_box_hydrant'] ? req.files['kelengkapan_box_hydrant'][0].buffer : null;
+    const ruang_laktasi = req.files['ruang_laktasi'] ? req.files['ruang_laktasi'][0].buffer : null;
+    const ruang_p3k = req.files['ruang_p3k'] ? req.files['ruang_p3k'][0].buffer : null;
+    const organik = req.files['organik'] ? req.files['organik'][0].buffer : null;
+    const non_organik = req.files['non_organik'] ? req.files['non_organik'][0].buffer : null;
+    const limbah_b3 = req.files['limbah_b3'] ? req.files['limbah_b3'][0].buffer : null;
+    const smoking_area = req.files['smoking_area'] ? req.files['smoking_area'][0].buffer : null;
+    const dll = req.files['dll'] ? req.files['dll'][0].buffer : null;
+
+    // Query untuk menyimpan data ke database
+    const query = `
+        INSERT INTO checklist_k3_jagorawi 
+        (section, indikator_k3, expired_date, check_list_pemeriksaan, rambu_apar, 
+        kelengkapan_box_hydrant, ruang_laktasi, ruang_p3k, organik, non_organik, limbah_b3, 
+        smoking_area, dll) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+    `;
+    const values = [
+        section, indikator_k3, expired_date, check_list_pemeriksaan, 
+        rambu_apar, kelengkapan_box_hydrant, ruang_laktasi, ruang_p3k, organik, 
+        non_organik, limbah_b3, smoking_area, dll
+    ];
+
+    db.query(query, values, (error, results) => {
+        if (error) {
             console.error('Error inserting data:', error);
-            res.status(500).json({ message: 'Error inserting data' });
-        });
+            return res.status(500).json({ message: "Error saving data" });
+        }
+        res.status(201).json({ message: "Success" });
+    });
 });
+
+
+
 
 
 // Mengupdate data personel berdasarkan personel_k3_id
@@ -391,26 +516,52 @@ router.put('/updatepersoneljagorawi', (req, res) => {
 
 
 // Route untuk memperbarui data kejadian K3
-router.put('/updatekejadianjagorawi', (req, res) => {
-    const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence } = req.body;
+// router.put('/updatekejadianjagorawi', (req, res) => {
+//     const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence } = req.body;
 
-    // Query untuk memperbarui data berdasarkan ID
-    const query = `
-        UPDATE kejadian_darurat_jagorawi 
-             SET kejadian_darurat = $1, lokasi = $2, kronologi_kejadian = $3, tindak_lanjut = $4, evidence = $5
-             WHERE kejadian_darurat_id = $6 
-    `;
+//     // Query untuk memperbarui data berdasarkan ID
+//     const query = `
+//         UPDATE kejadian_darurat_jagorawi 
+//              SET kejadian_darurat = $1, lokasi = $2, kronologi_kejadian = $3, tindak_lanjut = $4, evidence = $5
+//              WHERE kejadian_darurat_id = $6 
+//     `;
 
-    // Eksekusi query dengan parameter dari request body
-    db.query(query, [kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence, kejadian_darurat_id])
-        .then(() => {
-            res.status(200).json({ message: 'Update Success' });
-        })
-        .catch((error) => {
-            console.error('Error updating data:', error);
-            res.status(500).json({ message: 'Error updating data' });
-        });
+//     // Eksekusi query dengan parameter dari request body
+//     db.query(query, [kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence, kejadian_darurat_id])
+//         .then(() => {
+//             res.status(200).json({ message: 'Update Success' });
+//         })
+//         .catch((error) => {
+//             console.error('Error updating data:', error);
+//             res.status(500).json({ message: 'Error updating data' });
+//         });
+// });
+
+
+
+const uploadUPDATE = multer({ storage: multer.memoryStorage() }); // Menggunakan memori untuk menyimpan file sementara
+
+app.put('/updatekejadianjagorawi', uploadUPDATE.single('evidence'), async (req, res) => {
+    const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
+    const evidence = req.file ? req.file.buffer : null; // Ambil file jika ada
+
+    try {
+        // Query untuk mengupdate data di database, periksa apakah evidence ada atau tidak
+        if (evidence) {
+            await db.query('UPDATE kejadian_darurat_jagorawi SET kejadian_darurat = $1, lokasi = $2, kronologi_kejadian = $3, tindak_lanjut = $4, evidence = $5 WHERE kejadian_darurat_id = $6', 
+            [kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, evidence, kejadian_darurat_id]);
+        } else {
+            await db.query('UPDATE kejadian_darurat_jagorawi SET kejadian_darurat = $1, lokasi = $2, kronologi_kejadian = $3, tindak_lanjut = $4 WHERE kejadian_darurat_id = $5', 
+            [kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut, kejadian_darurat_id]);
+        }
+
+        res.json({ message: "Update Success" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error updating data');
+    }
 });
+
 
 // Mengupdate data personel berdasarkan kecelakaan_kerja_id
 // Route untuk memperbarui data kecelakaan

@@ -716,7 +716,6 @@ h1, h2 {
                         <th>No</th>
                         <th>Section</th>
                         <th>Indikator K3</th>
-                        <th>Jumlah Item</th>
                         <th>Expired Date</th>
                         <th>Check List Pemeriksaan</th>
                         <th>Rambu APAR</th>
@@ -950,13 +949,9 @@ axios.get('getstrukturjagorawi')
             data: { kejadian_darurat_id: kejadian_darurat_id } // Mengirimkan data ID untuk dihapus
         })
         .then(function (response) {
-            if (response.data.message === "Delete Success") {
-                alert("Data berhasil dihapus.");
-                // Refresh tabel atau hapus baris dari DOM
-                location.reload();
-            } else {
-                alert("Data tidak ditemukan atau gagal dihapus.");
-            }
+            alert("Data berhasil dihapus.");
+            // Refresh tabel atau hapus baris dari DOM
+            location.reload();
         })
         .catch(function (error) {
             alert("Terjadi kesalahan saat menghapus data.");

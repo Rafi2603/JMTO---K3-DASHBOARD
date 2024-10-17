@@ -76,9 +76,9 @@
             </div>
 
             <div class="mb-3">
-                <label for="evidence" class="form-label">Evidence (Link)</label>
-                <input type="url" class="form-control" id="evidence" name="evidence" placeholder="https://example.com/file-link" required>
-            </div>            
+                <label for="evidence" class="form-label">Evidence (Image)</label>
+                <input type="file" class="form-control" id="evidence" name="evidence" accept="image/*" required>
+            </div>          
 
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
@@ -90,39 +90,50 @@
 
     <script>
         document.getElementById('updateKejadianForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Mencegah pengiriman form secara default
+    event.preventDefault(); // Mencegah pengiriman form secara default
 
-            // Ambil data dari form
-            const kejadian_darurat_id = document.getElementById('kejadian_darurat_id').value;
-            const kejadian_darurat = document.getElementById('kejadian_darurat').value;
-            const lokasi = document.getElementById('lokasi').value;
-            const kronologi_kejadian = document.getElementById('kronologi_kejadian').value;
-            const tindak_lanjut = document.getElementById('tindak_lanjut').value;
-            const evidence = document.getElementById('evidence').value;
+    // Buat objek FormData
+    const formData = new FormData();
 
-            // Kirim data menggunakan Axios
-            axios.put(`/updatekejadianjagorawi`, {
-                kejadian_darurat_id: kejadian_darurat_id,
-                kejadian_darurat: kejadian_darurat,
-                lokasi: lokasi,
-                kronologi_kejadian: kronologi_kejadian,
-                tindak_lanjut: tindak_lanjut,
-                evidence: evidence
-            })
-            .then(response => {
-                console.log(response.data); // Debugging response dari server
-                if (response.data.message === "Update Success") {
-                    alert('Data updated successfully!');
-                    window.location.href = 'http://localhost:3000/rekap-data-jagorawi.html'; // Redirect jika sukses
-                } else {
-                    alert('Data update failed.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred.');
-            });
-        });
+    // Ambil data dari form
+    const kejadian_darurat_id = document.getElementById('kejadian_darurat_id').value;
+    const kejadian_darurat = document.getElementById('kejadian_darurat').value;
+    const lokasi = document.getElementById('lokasi').value;
+    const kronologi_kejadian = document.getElementById('kronologi_kejadian').value;
+    const tindak_lanjut = document.getElementById('tindak_lanjut').value;
+    const evidenceFile = document.getElementById('evidence').files[0]; // Ambil file gambar
+
+    // Tambahkan data ke FormData
+    formData.append('kejadian_darurat_id', kejadian_darurat_id);
+    formData.append('kejadian_darurat', kejadian_darurat);
+    formData.append('lokasi', lokasi);
+    formData.append('kronologi_kejadian', kronologi_kejadian);
+    formData.append('tindak_lanjut', tindak_lanjut);
+    if (evidenceFile) {
+        formData.append('evidence', evidenceFile); // Tambahkan gambar jika ada
+    }
+
+    // Kirim data menggunakan Axios
+    axios.put(`/updatekejadianjagorawi`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data' // Pastikan tipe konten multipart
+        }
+    })
+    .then(response => {
+        console.log(response.data); // Debugging response dari server
+        if (response.data.message === "Update Success") {
+            alert('Data updated successfully!');
+            window.location.href = 'http://localhost:3000/rekap-data-jagorawi.html'; // Redirect jika sukses
+        } else {
+            alert('Data update failed.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred.');
+    });
+});
+
     </script>
 </body>
 </html>

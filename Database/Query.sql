@@ -3,14 +3,6 @@ CREATE TYPE user_role AS ENUM (
     'user'
 );
 
-CREATE TYPE profesi AS ENUM (
-    'Ahli K3 Umum',
-    'Ahli K3 Konstruksi',
-    'Auditor K3',
-    'Dokter Hiperkes',
-    'Paramedis'
-);
-
 CREATE TYPE MonthEnum AS ENUM (
     'January', 'February', 'March', 'April', 'May', 'June', 
     'July', 'August', 'September', 'October', 'November', 'December'
@@ -91,47 +83,25 @@ CREATE TABLE struktur_organisasi_jagorawi (
 
 
 -- Table for storing the K3 Checklist
-CREATE TABLE checklist_k3 (
+CREATE TABLE checklist_k3_jagorawi (
     checklist_id SERIAL PRIMARY KEY,
     section TEXT,  
     indikator_k3 TEXT,
-    jumlah_item INT,
-    kriteria TEXT,
-    evidence TEXT  
+    expired_date BYTEA,
+    check_list_Pemeriksaan BYTEA,
+    rambu_apar BYTEA,
+    kelengkapan_box_hydrant BYTEA,
+    ruang_laktasi BYTEA,
+    ruang_p3k BYTEA,
+    organik BYTEA,
+    non_organik BYTEA,
+    limbah_b3 BYTEA,
+    smoking_area BYTEA,
+    dll BYTEA
 );
 
 
 
--- Insert example data for section A: Perlengkapan Keadaan Darurat
-INSERT INTO checklist_k3 (section, indikator_k3, jumlah_item, kriteria, evidence)
-VALUES
-('A', 'APAR 6 Kg (Powder)', NULL, 'Expired date', NULL),
-('A', 'APAR 6 Kg (Powder)', NULL, 'Check list Pemeriksaan', NULL),
-('A', 'APAR 6 Kg (Powder)', NULL, 'Rambu APAR', NULL),
-('A', 'APAR 6,8 Kg (CO)', NULL, 'Expired date', NULL),
-('A', 'APAR 6,8 Kg (CO)', NULL, 'Check list Pemeriksaan', NULL),
-('A', 'APAR 6,8 Kg (CO)', NULL, 'Rambu APAR', NULL),
-('A', 'Hydrant', NULL, 'Check list Pemeriksaan', NULL),
-('A', 'Hydrant', NULL, 'Kelengkapan Box Hydrant', NULL),
-('A', 'Rambu-rambu evakuasi', NULL, NULL, NULL),
-('A', 'Titik/ Rambu Assembly point', NULL, NULL, NULL),
-('A', 'Kotak P3K dan isinya lengkap', NULL, NULL, NULL),
-('A', 'Ruang Kesehatan - Ruang Laktasi', NULL, NULL, NULL),
-('A', 'Ruang Kesehatan - Ruang P3K', NULL, NULL, NULL),
-('A', 'Nomor telepon penting saat keadaan darurat', NULL, NULL, NULL),
-('A', 'Dokumen HIRADC', NULL, NULL, NULL),
-('A', 'Prosedur keadaan darurat terpasang', NULL, NULL, NULL);
-
--- Insert example data for section B: Operasional
-INSERT INTO checklist_k3 (section, indikator_k3, jumlah_item, kriteria, evidence)
-VALUES
-('B', 'Pengelolaan Sampah', NULL, 'Organik', NULL),
-('B', 'Pengelolaan Sampah', NULL, 'Non Organik', NULL),
-('B', 'Pengelolaan Sampah', NULL, 'Limbah B3', NULL),
-('B', 'Penerangan', NULL, NULL, NULL),
-('B', 'Kenyamanan dan keamanan prasarana', NULL, 'Smoking Area', NULL),
-('B', 'Kenyamanan dan keamanan prasarana', NULL, 'Keamanan dan Ketertiban tempat parkir, tenant, dll', NULL),
-('B', 'Petugas keamanan', NULL, NULL, NULL);
 
 
 
