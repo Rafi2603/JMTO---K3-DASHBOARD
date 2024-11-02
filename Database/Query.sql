@@ -9,6 +9,7 @@ CREATE TYPE MonthEnum AS ENUM (
 );
 
 
+--Tabel Personel K3
 CREATE TABLE personel_k3 (
     personel_k3_id SERIAL PRIMARY KEY,           
     nama VARCHAR(100),     
@@ -16,6 +17,7 @@ CREATE TABLE personel_k3 (
     batas_masa_berlaku DATE 
 );
 
+--Tabel Kecelakaan Kerja
 CREATE TABLE kecelakaan_kerja (
     kecelakaan_kerja_id SERIAL PRIMARY KEY,
     Tanggal DATE,
@@ -29,61 +31,59 @@ CREATE TABLE kecelakaan_kerja (
     Perawatan_di_RS DATE
 );
 
+--Tabel Kejadian Darurat
 CREATE TABLE kejadian_darurat (
     kejadian_darurat_id SERIAL PRIMARY KEY,
     Kejadian_Darurat VARCHAR(100),
     Lokasi VARCHAR(100),
     Kronologi_Kejadian TEXT,
-    Tindak_Lanjut TEXT
+    Tindak_Lanjut TEXT,
+    evidence BYTEA
 );
 
-
+--Tabel Rekap Data K3
 CREATE TABLE rekap_data_k3 (
     no SERIAL PRIMARY KEY,
     bulan monthenum,
-    jumlah_karyawan_ops INT,
-    jumlah_karyawan_non_ops INT,
-    jumlah_hari_kerja_ops INT,
-    jumlah_hari_kerja_non_ops INT,
-    jumlah_jam_kerja INT,
-    kecelakaan_berat_ops INT,
-    kecelakaan_berat_non_ops INT,
-    kecelakaan_ringan_ops INT,
-    kecelakaan_ringan_non_ops INT,
-    kecelakaan_meninggal_ops INT,
-    kecelakaan_meninggal_non_ops INT,
-    kecelakaan_near_miss_ops INT,
-    kecelakaan_near_miss_non_ops INT,
-    fire_accident INT,
-    damaged_property INT,
-    jumlah_hari_hilang_ops INT,
-    jumlah_hari_hilang_non_ops INT,
-    jumlah_hari_tanpa_hilang_ops INT,
-    jumlah_hari_tanpa_hilang_non_ops INT,
-    lti_ops INT,
-    lti_non_ops INT,
-    man_hour_ops INT,
-    man_hour_non_ops INT
-    fr INT
+    jumlah_karyawan_ops NUMERIC,
+    jumlah_karyawan_non_ops NUMERIC,
+    jumlah_hari_kerja_ops NUMERIC,
+    jumlah_hari_kerja_non_ops NUMERIC,
+    jumlah_jam_kerja NUMERIC,
+    kecelakaan_berat_ops NUMERIC,
+    kecelakaan_berat_non_ops NUMERIC,
+    kecelakaan_ringan_ops NUMERIC,
+    kecelakaan_ringan_non_ops NUMERIC,
+    kecelakaan_meninggal_ops NUMERIC,
+    kecelakaan_meninggal_non_ops NUMERIC,
+    kecelakaan_near_miss_ops NUMERIC,
+    kecelakaan_near_miss_non_ops NUMERIC,
+    fire_accident NUMERIC,
+    damaged_property NUMERIC,
+    jumlah_hari_hilang_ops NUMERIC,
+    jumlah_hari_hilang_non_ops NUMERIC,
+    jumlah_hari_tanpa_hilang_ops NUMERIC,
+    jumlah_hari_tanpa_hilang_non_ops NUMERIC,
+    lti_ops NUMERIC,
+    lti_non_ops NUMERIC,
+    man_hour_ops NUMERIC,
+    man_hour_non_ops NUMERIC,
+    fr NUMERIC,
+    sr NUMERIC,
+    ir NUMERIC,
+    atlr NUMERIC,
+    tahun INT
 );
 
-
-CREATE TABLE akun_ruas (
-    ruas_id SERIAL PRIMARY KEY,
-    ruas VARCHAR(100),
-    pass_ruas TEXT
-);
-
-
-CREATE TABLE struktur_organisasi_jagorawi (
+--Tabel Struktur Organisasi
+CREATE TABLE struktur_organisasi (
     struktur_id SERIAL PRIMARY KEY  ,
     nama VARCHAR(100) ,
     jabatan VARCHAR(50) 
 );
 
-
--- Table for storing the K3 Checklist
-CREATE TABLE checklist_k3_jagorawi (
+-- Tabel Checklist K3
+CREATE TABLE checklist_k3 (
     checklist_id SERIAL PRIMARY KEY,
     section TEXT,  
     indikator_k3 TEXT,
@@ -99,6 +99,18 @@ CREATE TABLE checklist_k3_jagorawi (
     smoking_area BYTEA,
     dll BYTEA
 );
+
+--Tabel Akun Ruas
+CREATE TABLE akun_ruas (
+    ruas_id SERIAL PRIMARY KEY,
+    ruas VARCHAR(100),
+    pass_ruas TEXT
+);
+
+
+
+
+
 
 
 

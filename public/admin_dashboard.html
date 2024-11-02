@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Export Data P2K3</title>
+    <!-- Include Bootstrap CSS for styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Include custom font and additional styling -->
+    <style>
+        body {
+            background-color: #f0f2f5;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-family: 'Amonos Display', sans-serif;
+            font-weight: 800;
+            color: #0056b3;
+            font-size: 32px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .container {
+            max-width: 750px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 60px;
+            text-align: center;
+        }
+        .header-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .header-section img {
+            width: 90px;
+            height: auto;
+            margin-right: 15px;
+        }
+        .btn {
+            font-family: 'Amonos Display', sans-serif;
+            font-size: 18px;
+            border-radius: 5px;
+            padding: 10px 20px;
+            margin: 10px;
+        }
+        #exportButton {
+            background-color: #ffd900;
+            color: #0056b3;
+            font-weight: bold;
+        }
+        #exportButton:hover {
+            background-color: #ffcc00;
+        }
+    </style>
+    <!-- Include SheetJS for Excel export functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with logo and title -->
+        <div class="header-section">
+            <img src="jmto-logo.png" alt="JMTO Logo">
+            <h1>Admin Dashboard - Export Data P2K3</h1>
+        </div>
+        <!-- Export and Logout buttons -->
+        <div class="d-flex justify-content-center">
+            <button id="exportButton" class="btn btn-primary">Ekspor Data Rekap ke Excel</button>
+            <button id="logoutButton" class="btn btn-danger">Logout</button>
+        </div>
+    </div>
+    
+    <script>
+        // Logout functionality
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            fetch('/logout', { method: 'POST', credentials: 'include' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/'; // Redirect to login page
+                    } else {
+                        alert('Logout failed.');
+                    }
+                })
+                .catch(error => console.error('Error during logout:', error));
+        });
+
+        // Export data functionality
+        document.getElementById('exportButton').addEventListener('click', async () => {
+            try {
+                const response = await fetch('/admin/data/rekap_data_k3/summary');
+                const result = await response.json();
+
+                if (result && result.totals) {
+                    const workbook = XLSX.utils.book_new();
+                    const worksheet = XLSX.utils.json_to_sheet([result.totals]);
+                    XLSX.utils.book_append_sheet(workbook, worksheet, 'Rekap Data Summary');
+                    XLSX.writeFile(workbook, `Rekap_Data_Summary_${new Date().toISOString().slice(0, 10)}.xlsx`);
+                } else {
+                    alert('Data tidak ditemukan untuk ekspor.');
+                }
+            } catch (error) {
+                alert('Error retrieving data.');
+                console.error('Error fetching data:', error);
+            }
+        });
+    </script>
+    
+</body>
+</html>

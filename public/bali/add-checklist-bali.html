@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tambah Personel K3 Bali</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <style>
+        body {
+            background-color: #f4f9ff;
+            color: #000080;
+        }
+
+        h2 {
+            color: #ffcc00;
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .form-control {
+            border-color: #000080;
+        }
+
+        label {
+            color: #000080;
+        }
+
+        .btn-primary {
+            background-color: #000080;
+            border-color: #000080;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffcc00;
+            border-color: #ffcc00;
+            color: #000080;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Tambah Data Checklist K3 Bali</h2>
+        <form id="checklistK3Form">
+
+            <div class="form-group">
+                <label for="section" class="form-label">Section</label>
+                <select class="form-control" id="section" name="section" required>
+                    <option value="" disabled selected>Pilih Section</option>
+                    <option value="A">(A) Perlengkapan Keadaan Darurat</option>
+                    <option value="B">(B) Operasional</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="indikator_k3">Indikator K3:</label>
+                <input type="text" class="form-control" id="indikator_k3" name="indikator_k3" required>
+            </div>
+            <div class="form-group">
+                <label for="expired_date">Expired Date (Foto):</label>
+                <input type="file" class="form-control" id="expired_date" name="expired_date" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="check_list_pemeriksaan">Checklist Pemeriksaan (Foto):</label>
+                <input type="file" class="form-control" id="check_list_pemeriksaan" name="check_list_pemeriksaan" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="rambu_apar">Rambu APAR (Foto):</label>
+                <input type="file" class="form-control" id="rambu_apar" name="rambu_apar" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="kelengkapan_box_hydrant">Kelengkapan Box Hydrant (Foto):</label>
+                <input type="file" class="form-control" id="kelengkapan_box_hydrant" name="kelengkapan_box_hydrant" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="ruang_laktasi">Ruang Laktasi (Foto):</label>
+                <input type="file" class="form-control" id="ruang_laktasi" name="ruang_laktasi" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="ruang_p3k">Ruang P3K (Foto):</label>
+                <input type="file" class="form-control" id="ruang_p3k" name="ruang_p3k" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="organik">Organik (Foto):</label>
+                <input type="file" class="form-control" id="organik" name="organik" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="non_organik">Non Organik (Foto):</label>
+                <input type="file" class="form-control" id="non_organik" name="non_organik" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="limbah_b3">Limbah B3 (Foto):</label>
+                <input type="file" class="form-control" id="limbah_b3" name="limbah_b3" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="smoking_area">Smoking Area (Foto):</label>
+                <input type="file" class="form-control" id="smoking_area" name="smoking_area" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="dll">Lain-lain (Foto):</label>
+                <input type="file" class="form-control" id="dll" name="dll" accept="image/*">
+            </div>
+
+            <button id="submit" type="submit" class="btn btn-primary btn-block">Tambah Checklist K3</button>
+        </form>
+
+        <div id="message" class="mt-4"></div>
+    </div>
+
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <!-- Leaflet JS -->
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- CDN Axios -->
+
+
+    <script>
+document.getElementById('checklistK3Form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Mencegah form dikirim secara default
+
+    // Ambil data dari form
+    const formData = new FormData(this); // Ini otomatis mengambil file dan data lainnya
+
+    // Kirim data menggunakan Axios
+    axios.post('/addchecklistbali', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data' // Pastikan tipe konten multipart
+        }
+    })
+    .then(response => {
+        console.log(response.data); // Debugging response dari server
+        if (response.data.message === "Success") {
+            window.location.href = '/bali/rekap-data-bali.html'; // Redirect jika sukses
+        } else {
+            alert('Data submission failed.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred.');
+    });
+});
+
+    </script>
+
+</body>
+</html>
