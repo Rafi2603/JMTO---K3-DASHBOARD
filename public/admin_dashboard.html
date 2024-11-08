@@ -1,111 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Admin Dashboard - Export Data P2K3</title>
-    <!-- Include Bootstrap CSS for styling -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Include custom font and additional styling -->
-    <style>
-        body {
-            background-color: #f0f2f5;
-            font-family: Arial, sans-serif;
-        }
-        h1 {
-            font-family: 'Amonos Display', sans-serif;
-            font-weight: 800;
-            color: #0056b3;
-            font-size: 32px;
-            text-align: center;
-            margin-top: 20px;
-        }
-        .container {
-            max-width: 750px;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            margin-top: 60px;
-            text-align: center;
-        }
-        .header-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        .header-section img {
-            width: 90px;
-            height: auto;
-            margin-right: 15px;
-        }
-        .btn {
-            font-family: 'Amonos Display', sans-serif;
-            font-size: 18px;
-            border-radius: 5px;
-            padding: 10px 20px;
-            margin: 10px;
-        }
-        #exportButton {
-            background-color: #ffd900;
-            color: #0056b3;
-            font-weight: bold;
-        }
-        #exportButton:hover {
-            background-color: #ffcc00;
-        }
-    </style>
-    <!-- Include SheetJS for Excel export functionality -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-</head>
-<body>
-    <div class="container">
-        <!-- Header with logo and title -->
-        <div class="header-section">
+   <head>
+      <meta charset="UTF-8">
+      <title>Admin Dashboard - Export Data P2K3</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+      <style>
+         body {
+         background-color: #f0f2f5;
+         font-family: Arial, sans-serif;
+         }
+         h1 {
+         font-family: 'Amonos Display', sans-serif;
+         font-weight: 800;
+         color: #0056b3;
+         font-size: 32px;
+         text-align: center;
+         margin-top: 20px;
+         }
+         .container {
+         max-width: 750px;
+         background-color: #ffffff;
+         padding: 30px;
+         border-radius: 10px;
+         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+         margin-top: 60px;
+         text-align: center;
+         }
+         .header-section {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         margin-bottom: 20px;
+         }
+         .header-section img {
+         width: 90px;
+         height: auto;
+         margin-right: 15px;
+         }
+         .btn {
+         font-family: 'Amonos Display', sans-serif;
+         font-size: 18px;
+         border-radius: 5px;
+         padding: 10px 20px;
+         margin: 10px;
+         }
+         #exportButton {
+         background-color: #ffd900;
+         color: #0056b3;
+         font-weight: bold;
+         }
+         #exportButton:hover {
+         background-color: #ffcc00;
+         }
+         #loading {
+         display: none;
+         margin-top: 20px;
+         color: #0056b3;
+         }
+         #successAlert {
+         display: none;
+         margin-top: 20px;
+         }
+      </style>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+   </head>
+   <body>
+      <div class="container">
+         <div class="header-section">
             <img src="jmto-logo.png" alt="JMTO Logo">
             <h1>Admin Dashboard - Export Data P2K3</h1>
-        </div>
-        <!-- Export and Logout buttons -->
-        <div class="d-flex justify-content-center">
+         </div>
+         <div class="form-group">
+            <label for="yearSelect">Pilih Tahun:</label>
+            <select id="yearSelect" class="form-control" style="max-width: 200px; margin: 0 auto;">
+               <!-- Populate this dropdown with desired years -->
+               <option value="2024">2024</option>
+               <option value="2025">2025</option>
+               <option value="2026">2026</option>
+               <option value="2027">2027</option>
+               <option value="2028">2028</option>
+               <option value="2029">2029</option>
+               <option value="2030">2030</option>
+            </select>
+         </div>
+         <div class="d-flex justify-content-center">
             <button id="exportButton" class="btn btn-primary">Ekspor Data Rekap ke Excel</button>
             <button id="logoutButton" class="btn btn-danger">Logout</button>
-        </div>
-    </div>
-    
-    <script>
-        // Logout functionality
-        document.getElementById('logoutButton').addEventListener('click', () => {
-            fetch('/logout', { method: 'POST', credentials: 'include' })
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = '/'; // Redirect to login page
-                    } else {
-                        alert('Logout failed.');
-                    }
-                })
-                .catch(error => console.error('Error during logout:', error));
-        });
-
-        // Export data functionality
-        document.getElementById('exportButton').addEventListener('click', async () => {
-            try {
-                const response = await fetch('/admin/data/rekap_data_k3/summary');
-                const result = await response.json();
-
-                if (result && result.totals) {
-                    const workbook = XLSX.utils.book_new();
-                    const worksheet = XLSX.utils.json_to_sheet([result.totals]);
-                    XLSX.utils.book_append_sheet(workbook, worksheet, 'Rekap Data Summary');
-                    XLSX.writeFile(workbook, `Rekap_Data_Summary_${new Date().toISOString().slice(0, 10)}.xlsx`);
-                } else {
-                    alert('Data tidak ditemukan untuk ekspor.');
-                }
-            } catch (error) {
-                alert('Error retrieving data.');
-                console.error('Error fetching data:', error);
-            }
-        });
-    </script>
-    
-</body>
+         </div>
+         <div id="loading">Loading... Please wait</div>
+         <div id="successAlert" class="alert alert-success">Data berhasil diekspor ke Excel!</div>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script>
+         document.getElementById('logoutButton').addEventListener('click', async () => {
+             try {
+                 const response = await axios.post('/logout');
+                 
+                 if (response.status === 200) {
+                     // Redirect ke halaman login setelah logout berhasil
+                     window.location.href = '/'; // Update dengan URL halaman login Anda
+                 }
+             } catch (error) {
+                 console.error('Error logging out:', error);
+                 document.getElementById('warningMessage').textContent = 'Logout failed. Please try again.';
+             }
+         });
+      </script>
+      <script>
+         document.getElementById('exportButton').addEventListener('click', async () => {
+             const tahun = document.getElementById('yearSelect').value;
+             const loadingIndicator = document.getElementById('loading');
+             const successAlert = document.getElementById('successAlert');
+             loadingIndicator.style.display = 'block';
+             successAlert.style.display = 'none';
+         
+             try {
+                 const response = await fetch(`/admin/data/rekap_data_k3/summary?tahun=${tahun}`);
+                 const result = await response.json();
+         
+                 if (result && result.summary) {
+                     // Define headers with merged cells layout
+                     const headers = [
+                         ["No", "Tahun", "Bulan", "Jumlah Karyawan", "", "Jumlah Hari Kerja", "", "Jumlah Jam Kerja", "Kecelakaan Berat", "", "Kecelakaan Ringan", "", "Kecelakaan Meninggal", "", "Near Miss", "", "Fire Accident", "Damaged Property", "Jumlah Hari Hilang", "", "Jumlah Hari Tanpa Hilang", "", "LTI", "", "Man Hour", "", "Frequency Rate (FR)", "Severity Rate (SR)", "Incident Rate (SR)", "Average Time Lost Injury (ATLR)"],
+                         ["", "", "", "OPS", "Non-OPS", "OPS", "Non-OPS", "", "OPS", "Non-OPS", "OPS", "Non-OPS", "OPS", "Non-OPS", "OPS", "Non-OPS", "", "", "OPS", "Non-OPS", "OPS", "Non-OPS", "OPS", "Non-OPS", "OPS", "Non-OPS", "", "", "", ""]
+                     ];
+         
+                     // Prepare data rows according to your template structure
+                     const dataRows = result.summary.map((item, index) => [
+                         index + 1,                                          // No
+                         item.tahun,                                         // Tahun
+                         item.bulan,                                         // Bulan
+                         item.total_jumlah_karyawan_ops,                     // Jumlah Karyawan OPS
+                         item.total_jumlah_karyawan_non_ops,                 // Jumlah Karyawan Non-OPS
+                         item.total_jumlah_hari_kerja_ops,                   // Jumlah Hari Kerja OPS
+                         item.total_jumlah_hari_kerja_non_ops,               // Jumlah Hari Kerja Non-OPS
+                         item.total_jumlah_jam_kerja,                        // Jumlah Jam Kerja
+                         item.total_kecelakaan_berat_ops,                    // Kecelakaan Berat OPS
+                         item.total_kecelakaan_berat_non_ops,                // Kecelakaan Berat Non-OPS
+                         item.total_kecelakaan_ringan_ops,                   // Kecelakaan Ringan OPS
+                         item.total_kecelakaan_ringan_non_ops,               // Kecelakaan Ringan Non-OPS
+                         item.total_kecelakaan_meninggal_ops,                // Kecelakaan Meninggal OPS
+                         item.total_kecelakaan_meninggal_non_ops,            // Kecelakaan Meninggal Non-OPS
+                         item.total_kecelakaan_near_miss_ops,                // Near Miss OPS
+                         item.total_kecelakaan_near_miss_non_ops,            // Near Miss Non-OPS
+                         item.total_fire_accident,                           // Fire Accident
+                         item.total_damaged_property,                        // Damaged Property
+                         item.total_jumlah_hari_hilang_ops,                  // Jumlah Hari Hilang OPS
+                         item.total_jumlah_hari_hilang_non_ops,              // Jumlah Hari Hilang Non-OPS
+                         item.total_jumlah_hari_tanpa_hilang_ops,            // Jumlah Hari Tanpa Hilang OPS
+                         item.total_jumlah_hari_tanpa_hilang_non_ops,        // Jumlah Hari Tanpa Hilang Non-OPS
+                         item.total_lti_ops,                                 // LTI OPS
+                         item.total_lti_non_ops,                             // LTI Non-OPS
+                         item.total_man_hour_ops,                            // Man Hour OPS
+                         item.total_man_hour_non_ops,                        // Man Hour Non-OPS
+                         item.total_fr,                                      // Frequency Rate (FR)
+                         item.total_sr,                                      // Severity Rate (SR)
+                         item.total_ir,                                      // Incident Rate (SR)
+                         item.total_atlr                                     // Average Time Lost Injury (ATLR)
+                     ]);
+         
+                     // Combine headers and data
+                     const worksheetData = headers.concat(dataRows);
+         
+                     // Create worksheet and add data
+                     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+         
+                     // Define merged cells for headers
+                     worksheet['!merges'] = [
+                         { s: { r: 0, c: 0 }, e: { r: 1, c: 0 } },   // Merge "No" header
+                         { s: { r: 0, c: 1 }, e: { r: 1, c: 1 } },   // Merge "Tahun" header
+                         { s: { r: 0, c: 2 }, e: { r: 1, c: 2 } },   // Merge "Bulan" header
+                         { s: { r: 0, c: 3 }, e: { r: 0, c: 4 } },   // Merge "Jumlah Karyawan" header
+                         { s: { r: 0, c: 5 }, e: { r: 0, c: 6 } },   // Merge "Jumlah Hari Kerja" header
+                         { s: { r: 0, c: 8 }, e: { r: 0, c: 9 } },   // Merge "Kecelakaan Berat" header
+                         { s: { r: 0, c: 10 }, e: { r: 0, c: 11 } }, // Merge "Kecelakaan Ringan" header
+                         { s: { r: 0, c: 12 }, e: { r: 0, c: 13 } }, // Merge "Kecelakaan Meninggal" header
+                         { s: { r: 0, c: 14 }, e: { r: 0, c: 15 } }, // Merge "Near Miss" header
+                         { s: { r: 0, c: 18 }, e: { r: 0, c: 19 } }, // Merge "Jumlah Hari Hilang" header
+                         { s: { r: 0, c: 20 }, e: { r: 0, c: 21 } }, // Merge "Jumlah Hari Tanpa Hilang" header
+                         { s: { r: 0, c: 22 }, e: { r: 0, c: 23 } }, // Merge "LTI" header
+                         { s: { r: 0, c: 24 }, e: { r: 0, c: 25 } }, // Merge "Man Hour" header
+                     ];
+         
+                     // Create workbook and add worksheet
+                     const workbook = XLSX.utils.book_new();
+                     XLSX.utils.book_append_sheet(workbook, worksheet, `Rekap Data Summary ${tahun}`);
+         
+                     // Export file
+                     XLSX.writeFile(workbook, `Rekap_Data_Summary_${tahun}.xlsx`);
+                     
+                     // Show success alert
+                     successAlert.style.display = 'block';
+                 } else {
+                     alert('Data tidak ditemukan untuk ekspor.');
+                 }
+             } catch (error) {
+                 alert('Error retrieving data.');
+                 console.error('Error fetching data:', error);
+             } finally {
+                 loadingIndicator.style.display = 'none';
+             }
+         });
+      </script>
+   </body>
 </html>
