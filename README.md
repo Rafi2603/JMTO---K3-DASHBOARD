@@ -13,13 +13,16 @@ Tujuan utama dari aplikasi ini adalah menyediakan platform yang terpusat dan int
    - Ekspor tabel ke file PDF menggunakan **jsPDF** dan **autoTable** untuk dokumentasi atau pelaporan.
 
 2. **Menambah Data K3**:
-   - Halaman input untuk menambah data K3 baru dengan form khusus yang mencakup dropdown untuk input bulan serta input lainnya sesuai dengan data keselamatan yang diperlukan.
+   - Halaman input untuk menambah data K3 baru dengan form khusus untuk input yang sesuai dengan data K3 yang diperlukan.
 
-3. **Fitur Admin**:
-   - Fitur khusus untuk admin yang memungkinkan akses ke seluruh data dari setiap *ruas* dan kemampuan mengekspor data tersebut ke dalam format **Excel** menggunakan **ExcelJS**.
+3. **Memperbarui Data K3**:
+   - Halaman input untuk memperbarui data K3 yang sudah ada sebelumnya dengan form khusus untuk input yang sesuai dengan data K3 yang diperlukan.
+
+4. **Fitur Admin**:
+   - Fitur khusus untuk admin yang memungkinkan akses ke seluruh data dari setiap *ruas* dan kemampuan mengekspor data tersebut ke dalam format **Excel**.
    - Halaman khusus untuk admin yang memuat tabel data dari tiap *ruas* dengan opsi untuk melihat semua data atau mengekspor data secara keseluruhan ke file Excel.
 
-4. **Tabel Spesifik per Ruas**:
+5. **Tabel Spesifik per Ruas**:
    - Setiap *ruas* memiliki tabel-tabel data spesifik yang terdiri dari berbagai kategori seperti:
      - **Personel K3**: Data terkait personel yang bertugas dalam bidang keselamatan kerja.
      - **Kecelakaan Kerja**: Mencatat insiden kecelakaan dengan rincian lengkap seperti tanggal, NIK, nama, jabatan, dan detail kecelakaan.
@@ -28,7 +31,7 @@ Tujuan utama dari aplikasi ini adalah menyediakan platform yang terpusat dan int
      - **Struktur Organisasi**: Informasi struktur organisasi terkait personel K3.
      - **Checklist K3**: Data pemeriksaan checklist K3 dengan parameter keselamatan yang berbeda.
 
-5. **Autentikasi User**:
+6. **Autentikasi User**:
    - Halaman login untuk autentikasi berdasarkan `ruas` dan `pass_ruas`, di mana setiap pengguna dapat mengakses data sesuai hak akses masing-masing. Admin memiliki akses tambahan untuk mengelola seluruh data dari setiap *ruas*.
 
 ## Teknologi yang Digunakan

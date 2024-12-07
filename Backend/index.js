@@ -37,24 +37,35 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-function ensureAdmin(req, res, next) {
-    if (req.session.userrole === 'admin') {
-        next(); // If the user is an admin, proceed to the next middleware function or route handler
+
+// Middleware for authorization
+// Middleware for authorization
+function authorizeUser(req, res, next) {
+    if (req.session && req.session.userRole === 'user') { // Ensure 'userRole' matches the session name
+        // User is authorized
+        next();
     } else {
-        res.status(403).send('Forbidden'); // If the user is not an admin, send a 403 Forbidden response
+        // User is not authorized, redirect to denied.html
+        res.redirect('/denied.html');
     }
-  }
+}
 
 
-router.get('/admin_dashboard.html', ensureAdmin, (req, res) => {
-    res.sendFile(path.join(__dirname, '../public', 'admin_dashboard.html'));
-});
 
+function authorizeAdmin(req, res, next) {
+    if (req.session && req.session.userRole === 'admin') { // Pastikan 'userRole' sesuai dengan nama di sesi
+        // User is authorized
+        next();
+    } else {
+        // User is not authorized, respond with JSON
+        res.status(403).json({ message: 'Access denied. Unauthorized admin.' });
+    }
+}
 
 // Routing TABEL REKAP DATA K3
 // Menampilkan seluruh data dari Tabel
-router.get('/getdata', (req, res) => {
-    db.query('SELECT * FROM rekap_data_k3', (err, results) => {
+router.get('/getdata', authorizeUser, (req, res) => {
+    db.query('SELECT * FROM rekap_data_k3_jagorawi', (err, results) => {
         if (err) {
             console.log(err);
             return;
@@ -65,7 +76,7 @@ router.get('/getdata', (req, res) => {
 
 
 // Menampilkan seluruh data dari Tabel Jagorawi
-router.get('/getdatajagorawi', (req, res) => {
+router.get('/getdatajagorawi', authorizeUser, (req, res) => {
     db.query('SELECT * FROM rekap_data_k3_jagorawi', (err, results) => {
         if (err) {
             console.log(err);
@@ -78,7 +89,7 @@ router.get('/getdatajagorawi', (req, res) => {
 
 
 // Menampilkan seluruh data dari Tabel cikampek
-router.get('/getdatacikampek', (req, res) => {
+router.get('/getdatacikampek', authorizeUser, (req, res) => {
     db.query('SELECT * FROM rekap_data_k3_cikampek', (err, results) => {
         if (err) {
             console.log(err);
@@ -89,7 +100,7 @@ router.get('/getdatacikampek', (req, res) => {
 });
 
 
-router.get('/getdatabali', (req, res) => {
+router.get('/getdatabali', authorizeUser, (req, res) => {
     db.query('SELECT * FROM rekap_data_k3_bali', (err, results) => {
         if (err) {
             console.log(err);
@@ -100,7 +111,7 @@ router.get('/getdatabali', (req, res) => {
 });
 
 
-router.get('/getdatabalsam', (req, res) => {
+router.get('/getdatabalsam', authorizeUser, (req, res) => {
     db.query('SELECT * FROM rekap_data_k3_balsam', (err, results) => {
         if (err) {
             console.log(err);
@@ -111,7 +122,7 @@ router.get('/getdatabalsam', (req, res) => {
 });
 
 
-router.get('/getdatabelmera', (req, res) => {
+router.get('/getdatabelmera', authorizeUser, (req, res) => {
     db.query('SELECT * FROM rekap_data_k3_belmera', (err, results) => {
         if (err) {
             console.log(err);
@@ -124,7 +135,7 @@ router.get('/getdatabelmera', (req, res) => {
 
 
 // Menampilkan seluruh personel dari Tabel Jagorawi
-router.get('/getpersoneljagorawi', (req, res) => {
+router.get('/getpersoneljagorawi', authorizeUser, (req, res) => {
     db.query('SELECT * FROM personel_k3_jagorawi', (err, results) => {
         if (err) {
             console.log(err);
@@ -135,7 +146,7 @@ router.get('/getpersoneljagorawi', (req, res) => {
 });
 
 
-router.get('/getpersonelcikampek', (req, res) => {
+router.get('/getpersonelcikampek', authorizeUser, (req, res) => {
     db.query('SELECT * FROM personel_k3_cikampek', (err, results) => {
         if (err) {
             console.log(err);
@@ -148,7 +159,7 @@ router.get('/getpersonelcikampek', (req, res) => {
 
 
 // Menampilkan seluruh personel dari Tabel Cipularang
-router.get('/getpersonelbali', (req, res) => {
+router.get('/getpersonelbali', authorizeUser, (req, res) => {
     db.query('SELECT * FROM personel_k3_bali', (err, results) => {
         if (err) {
             console.log(err);
@@ -159,7 +170,7 @@ router.get('/getpersonelbali', (req, res) => {
 });
 
 
-router.get('/getpersonelbalsam', (req, res) => {
+router.get('/getpersonelbalsam', authorizeUser, (req, res) => {
     db.query('SELECT * FROM personel_k3_balsam', (err, results) => {
         if (err) {
             console.log(err);
@@ -170,7 +181,7 @@ router.get('/getpersonelbalsam', (req, res) => {
 });
 
 
-router.get('/getpersonelbelmera', (req, res) => {
+router.get('/getpersonelbelmera', authorizeUser, (req, res) => {
     db.query('SELECT * FROM personel_k3_belmera', (err, results) => {
         if (err) {
             console.log(err);
@@ -183,7 +194,7 @@ router.get('/getpersonelbelmera', (req, res) => {
 
 
 // Menampilkan seluruh kecelakaan dari Tabel Jagorawi
-router.get('/getkecelakaanjagorawi', (req, res) => {
+router.get('/getkecelakaanjagorawi', authorizeUser, (req, res) => {
     db.query('SELECT * FROM kecelakaan_kerja_jagorawi', (err, results) => {
         if (err) {
             console.log(err);
@@ -194,7 +205,7 @@ router.get('/getkecelakaanjagorawi', (req, res) => {
 });
 
 
-router.get('/getkecelakaancikampek', (req, res) => {
+router.get('/getkecelakaancikampek', authorizeUser, (req, res) => {
     db.query('SELECT * FROM kecelakaan_kerja_cikampek', (err, results) => {
         if (err) {
             console.log(err);
@@ -205,7 +216,7 @@ router.get('/getkecelakaancikampek', (req, res) => {
 });
 
 
-router.get('/getkecelakaanbali', (req, res) => {
+router.get('/getkecelakaanbali', authorizeUser, (req, res) => {
     db.query('SELECT * FROM kecelakaan_kerja_bali', (err, results) => {
         if (err) {
             console.log(err);
@@ -216,7 +227,7 @@ router.get('/getkecelakaanbali', (req, res) => {
 });
 
 
-router.get('/getkecelakaanbalsam', (req, res) => {
+router.get('/getkecelakaanbalsam', authorizeUser, (req, res) => {
     db.query('SELECT * FROM kecelakaan_kerja_balsam', (err, results) => {
         if (err) {
             console.log(err);
@@ -227,7 +238,7 @@ router.get('/getkecelakaanbalsam', (req, res) => {
 });
 
 
-router.get('/getkecelakaanbelmera', (req, res) => {
+router.get('/getkecelakaanbelmera', authorizeUser, (req, res) => {
     db.query('SELECT * FROM kecelakaan_kerja_belmera', (err, results) => {
         if (err) {
             console.log(err);
@@ -240,7 +251,7 @@ router.get('/getkecelakaanbelmera', (req, res) => {
 
 
 // Assuming you're using Express and pg for PostgreSQL
-router.get('/getkejadianjagorawi', (req, res) => {
+router.get('/getkejadianjagorawi', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM kejadian_darurat_jagorawi';
     db.query(query)
         .then(result => {
@@ -264,7 +275,7 @@ router.get('/getkejadianjagorawi', (req, res) => {
 
 
 // Assuming you're using Express and pg for PostgreSQL
-router.get('/getkejadiancikampek', (req, res) => {
+router.get('/getkejadiancikampek', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM kejadian_darurat_cikampek';
     db.query(query)
         .then(result => {
@@ -287,7 +298,7 @@ router.get('/getkejadiancikampek', (req, res) => {
 });
 
 
-router.get('/getkejadianbali', (req, res) => {
+router.get('/getkejadianbali', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM kejadian_darurat_bali';
     db.query(query)
         .then(result => {
@@ -310,7 +321,7 @@ router.get('/getkejadianbali', (req, res) => {
 });
 
 
-router.get('/getkejadianbalsam', (req, res) => {
+router.get('/getkejadianbalsam', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM kejadian_darurat_balsam';
     db.query(query)
         .then(result => {
@@ -333,7 +344,7 @@ router.get('/getkejadianbalsam', (req, res) => {
 });
 
 
-router.get('/getkejadianbelmera', (req, res) => {
+router.get('/getkejadianbelmera', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM kejadian_darurat_belmera';
     db.query(query)
         .then(result => {
@@ -356,7 +367,7 @@ router.get('/getkejadianbelmera', (req, res) => {
 });
 
 
-router.get('/getstrukturjagorawi', (req, res) => {
+router.get('/getstrukturjagorawi', authorizeUser, (req, res) => {
     db.query('SELECT * FROM struktur_organisasi_jagorawi ORDER BY jabatan', (err, results) => {
         if (err) {
             console.log(err);
@@ -367,7 +378,7 @@ router.get('/getstrukturjagorawi', (req, res) => {
 });
 
 
-router.get('/getstrukturcikampek', (req, res) => {
+router.get('/getstrukturcikampek', authorizeUser, (req, res) => {
     db.query('SELECT * FROM struktur_organisasi_cikampek ORDER BY jabatan', (err, results) => {
         if (err) {
             console.log(err);
@@ -378,7 +389,7 @@ router.get('/getstrukturcikampek', (req, res) => {
 });
 
 
-router.get('/getstrukturbali', (req, res) => {
+router.get('/getstrukturbali', authorizeUser, (req, res) => {
     db.query('SELECT * FROM struktur_organisasi_bali ORDER BY jabatan', (err, results) => {
         if (err) {
             console.log(err);
@@ -389,7 +400,7 @@ router.get('/getstrukturbali', (req, res) => {
 });
 
 
-router.get('/getstrukturbalsam', (req, res) => {
+router.get('/getstrukturbalsam', authorizeUser, (req, res) => {
     db.query('SELECT * FROM struktur_organisasi_balsam ORDER BY jabatan', (err, results) => {
         if (err) {
             console.log(err);
@@ -400,7 +411,7 @@ router.get('/getstrukturbalsam', (req, res) => {
 });
 
 
-router.get('/getstrukturbelmera', (req, res) => {
+router.get('/getstrukturbelmera', authorizeUser, (req, res) => {
     db.query('SELECT * FROM struktur_organisasi_belmera ORDER BY jabatan', (err, results) => {
         if (err) {
             console.log(err);
@@ -414,7 +425,7 @@ router.get('/getstrukturbelmera', (req, res) => {
 
 
 
-router.get('/getchecklistjagorawi', (req, res) => {
+router.get('/getchecklistjagorawi', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM checklist_k3_jagorawi';
     db.query(query)
         .then(result => {
@@ -458,7 +469,7 @@ router.get('/getchecklistjagorawi', (req, res) => {
 });
 
 
-router.get('/getchecklistcikampek', (req, res) => {
+router.get('/getchecklistcikampek', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM checklist_k3_cikampek';
     db.query(query)
         .then(result => {
@@ -502,7 +513,7 @@ router.get('/getchecklistcikampek', (req, res) => {
 });
 
 
-router.get('/getchecklistbali', (req, res) => {
+router.get('/getchecklistbali', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM checklist_k3_bali';
     db.query(query)
         .then(result => {
@@ -546,7 +557,7 @@ router.get('/getchecklistbali', (req, res) => {
 });
 
 
-router.get('/getchecklistbalsam', (req, res) => {
+router.get('/getchecklistbalsam', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM checklist_k3_balsam';
     db.query(query)
         .then(result => {
@@ -590,7 +601,7 @@ router.get('/getchecklistbalsam', (req, res) => {
 });
 
 
-router.get('/getchecklistbelmera', (req, res) => {
+router.get('/getchecklistbelmera', authorizeUser, (req, res) => {
     const query = 'SELECT * FROM checklist_k3_belmera';
     db.query(query)
         .then(result => {
@@ -639,7 +650,7 @@ router.get('/getchecklistbelmera', (req, res) => {
 // Menambahkan data baru ke dalam Tabel Jagorawi
 // Route untuk menambahkan data
 // Menambahkan data baru ke dalam Tabel Jagorawi
-router.post('/adddatajagorawi', (req, res) => {
+router.post('/adddatajagorawi', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -701,7 +712,7 @@ router.post('/adddatajagorawi', (req, res) => {
 });
 
 
-router.post('/adddatacikampek', (req, res) => {
+router.post('/adddatacikampek', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -763,7 +774,7 @@ router.post('/adddatacikampek', (req, res) => {
 });
 
 
-router.post('/adddatabali', (req, res) => {
+router.post('/adddatabali', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -825,7 +836,7 @@ router.post('/adddatabali', (req, res) => {
 });
 
 
-router.post('/adddatabalsam', (req, res) => {
+router.post('/adddatabalsam', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -887,7 +898,7 @@ router.post('/adddatabalsam', (req, res) => {
 });
 
 
-router.post('/adddatabelmera', (req, res) => {
+router.post('/adddatabelmera', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -950,7 +961,7 @@ router.post('/adddatabelmera', (req, res) => {
 
 
 // Menambahkan kecelakaan baru ke dalam Tabel Jagorawi
-router.post('/addkecelakaanjagorawi', (req, res) => {
+router.post('/addkecelakaanjagorawi', authorizeUser, (req, res) => {
     const { Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk insert data
@@ -972,7 +983,7 @@ router.post('/addkecelakaanjagorawi', (req, res) => {
 });
 
 
-router.post('/addkecelakaancikampek', (req, res) => {
+router.post('/addkecelakaancikampek', authorizeUser, (req, res) => {
     const { Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk insert data
@@ -994,7 +1005,7 @@ router.post('/addkecelakaancikampek', (req, res) => {
 });
 
 
-router.post('/addkecelakaanbali', (req, res) => {
+router.post('/addkecelakaanbali', authorizeUser, (req, res) => {
     const { Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk insert data
@@ -1016,7 +1027,7 @@ router.post('/addkecelakaanbali', (req, res) => {
 });
 
 
-router.post('/addkecelakaanbalsam', (req, res) => {
+router.post('/addkecelakaanbalsam', authorizeUser, (req, res) => {
     const { Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk insert data
@@ -1038,7 +1049,7 @@ router.post('/addkecelakaanbalsam', (req, res) => {
 });
 
 
-router.post('/addkecelakaanbelmera', (req, res) => {
+router.post('/addkecelakaanbelmera', authorizeUser, (req, res) => {
     const { Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk insert data
@@ -1060,7 +1071,7 @@ router.post('/addkecelakaanbelmera', (req, res) => {
 });
 
 // Menambahkan personel baru ke dalam Tabel Jagorawi
-router.post('/addpersoneljagorawi', (req, res) => {
+router.post('/addpersoneljagorawi', authorizeUser, (req, res) => {
     const { nama, role_personel_k3, batas_masa_berlaku } = req.body;
     
     // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
@@ -1080,7 +1091,7 @@ router.post('/addpersoneljagorawi', (req, res) => {
         });
 });
 
-router.post('/addpersonelcikampek', (req, res) => {
+router.post('/addpersonelcikampek',authorizeUser, (req, res) => {
     const { nama, role_personel_k3, batas_masa_berlaku } = req.body;
     
     // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
@@ -1101,7 +1112,7 @@ router.post('/addpersonelcikampek', (req, res) => {
 });
 
 
-router.post('/addpersonelbali', (req, res) => {
+router.post('/addpersonelbali', authorizeUser, (req, res) => {
     const { nama, role_personel_k3, batas_masa_berlaku } = req.body;
     
     // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
@@ -1122,7 +1133,7 @@ router.post('/addpersonelbali', (req, res) => {
 });
 
 
-router.post('/addpersonelbalsam', (req, res) => {
+router.post('/addpersonelbalsam', authorizeUser, (req, res) => {
     const { nama, role_personel_k3, batas_masa_berlaku } = req.body;
     
     // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
@@ -1143,7 +1154,7 @@ router.post('/addpersonelbalsam', (req, res) => {
 });
 
 
-router.post('/addpersonelbelmera', (req, res) => {
+router.post('/addpersonelbelmera', authorizeUser, (req, res) => {
     const { nama, role_personel_k3, batas_masa_berlaku } = req.body;
     
     // Query untuk memasukkan data ke dalam tabel personel_k3_jagorawi
@@ -1169,7 +1180,7 @@ router.post('/addpersonelbelmera', (req, res) => {
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() }); // Atur multer untuk menyimpan file di memori
 
-router.post('/addkejadianjagorawi', upload.single('evidence'), async (req, res) => {
+router.post('/addkejadianjagorawi', authorizeUser, upload.single('evidence'), async (req, res) => {
     const { kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file.buffer; // Ambil file dari multer (disimpan dalam buffer)
 
@@ -1185,7 +1196,7 @@ router.post('/addkejadianjagorawi', upload.single('evidence'), async (req, res) 
 });
 
 
-router.post('/addkejadiancikampek', upload.single('evidence'), async (req, res) => {
+router.post('/addkejadiancikampek', authorizeUser, upload.single('evidence'), async (req, res) => {
     const { kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file.buffer; // Ambil file dari multer (disimpan dalam buffer)
 
@@ -1201,7 +1212,7 @@ router.post('/addkejadiancikampek', upload.single('evidence'), async (req, res) 
 });
 
 
-router.post('/addkejadianbali', upload.single('evidence'), async (req, res) => {
+router.post('/addkejadianbali', authorizeUser, upload.single('evidence'), async (req, res) => {
     const { kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file.buffer; // Ambil file dari multer (disimpan dalam buffer)
 
@@ -1217,7 +1228,7 @@ router.post('/addkejadianbali', upload.single('evidence'), async (req, res) => {
 });
 
 
-router.post('/addkejadianbalsam', upload.single('evidence'), async (req, res) => {
+router.post('/addkejadianbalsam', authorizeUser, upload.single('evidence'), async (req, res) => {
     const { kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file.buffer; // Ambil file dari multer (disimpan dalam buffer)
 
@@ -1233,7 +1244,7 @@ router.post('/addkejadianbalsam', upload.single('evidence'), async (req, res) =>
 });
 
 
-router.post('/addkejadianbelmera', upload.single('evidence'), async (req, res) => {
+router.post('/addkejadianbelmera', authorizeUser, upload.single('evidence'), async (req, res) => {
     const { kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file.buffer; // Ambil file dari multer (disimpan dalam buffer)
 
@@ -1251,7 +1262,7 @@ router.post('/addkejadianbelmera', upload.single('evidence'), async (req, res) =
 
 const uploadCHECKLIST = multer({ storage: multer.memoryStorage() }); // Menggunakan memori untuk penyimpanan sementara
 
-router.post('/addchecklistjagorawi', uploadCHECKLIST.fields([
+router.post('/addchecklistjagorawi', authorizeUser, uploadCHECKLIST.fields([
     { name: 'expired_date', maxCount: 1 },
     { name: 'check_list_pemeriksaan', maxCount: 1 },
     { name: 'rambu_apar', maxCount: 1 },
@@ -1304,7 +1315,7 @@ router.post('/addchecklistjagorawi', uploadCHECKLIST.fields([
 });
 
 
-router.post('/addchecklistbali', uploadCHECKLIST.fields([
+router.post('/addchecklistbali', authorizeUser, uploadCHECKLIST.fields([
     { name: 'expired_date', maxCount: 1 },
     { name: 'check_list_pemeriksaan', maxCount: 1 },
     { name: 'rambu_apar', maxCount: 1 },
@@ -1357,7 +1368,7 @@ router.post('/addchecklistbali', uploadCHECKLIST.fields([
 });
 
 
-router.post('/addchecklistbalsam', uploadCHECKLIST.fields([
+router.post('/addchecklistbalsam', authorizeUser, uploadCHECKLIST.fields([
     { name: 'expired_date', maxCount: 1 },
     { name: 'check_list_pemeriksaan', maxCount: 1 },
     { name: 'rambu_apar', maxCount: 1 },
@@ -1414,7 +1425,7 @@ router.post('/addchecklistbalsam', uploadCHECKLIST.fields([
 
 const uploadCHECKLIST1 = multer({ storage: multer.memoryStorage() }); // Menggunakan memori untuk penyimpanan sementara
 
-router.post('/addchecklistcikampek', uploadCHECKLIST1.fields([
+router.post('/addchecklistcikampek', authorizeUser, uploadCHECKLIST1.fields([
     { name: 'expired_date', maxCount: 1 },
     { name: 'check_list_pemeriksaan', maxCount: 1 },
     { name: 'rambu_apar', maxCount: 1 },
@@ -1467,7 +1478,7 @@ router.post('/addchecklistcikampek', uploadCHECKLIST1.fields([
 });
 
 
-router.post('/addchecklistbelmera', uploadCHECKLIST1.fields([
+router.post('/addchecklistbelmera', authorizeUser, uploadCHECKLIST1.fields([
     { name: 'expired_date', maxCount: 1 },
     { name: 'check_list_pemeriksaan', maxCount: 1 },
     { name: 'rambu_apar', maxCount: 1 },
@@ -1521,7 +1532,7 @@ router.post('/addchecklistbelmera', uploadCHECKLIST1.fields([
 
 const updateCHECKLIST = multer({ storage: multer.memoryStorage() });
 
-router.put('/updatechecklistcikampek', updateCHECKLIST.fields([
+router.put('/updatechecklistcikampek', authorizeUser, updateCHECKLIST.fields([
     { name: 'expired_date', maxCount: 1 },
     { name: 'check_list_pemeriksaan', maxCount: 1 },
     { name: 'rambu_apar', maxCount: 1 },
@@ -1583,7 +1594,7 @@ router.put('/updatechecklistcikampek', updateCHECKLIST.fields([
 });
 
 
-router.put('/updatechecklistbalsam', updateCHECKLIST.fields([
+router.put('/updatechecklistbalsam', authorizeUser, updateCHECKLIST.fields([
     { name: 'expired_date', maxCount: 1 },
     { name: 'check_list_pemeriksaan', maxCount: 1 },
     { name: 'rambu_apar', maxCount: 1 },
@@ -1645,7 +1656,7 @@ router.put('/updatechecklistbalsam', updateCHECKLIST.fields([
 });
 
 
-router.put('/updatechecklistbelmera', updateCHECKLIST.fields([
+router.put('/updatechecklistbelmera', authorizeUser, updateCHECKLIST.fields([
     { name: 'expired_date', maxCount: 1 },
     { name: 'check_list_pemeriksaan', maxCount: 1 },
     { name: 'rambu_apar', maxCount: 1 },
@@ -1709,7 +1720,7 @@ router.put('/updatechecklistbelmera', updateCHECKLIST.fields([
 
 // Mengupdate data personel berdasarkan personel_k3_id
 // Route untuk memperbarui data personel K3
-router.put('/updatepersoneljagorawi', (req, res) => {
+router.put('/updatepersoneljagorawi', authorizeUser, (req, res) => {
     const { personel_k3_id, nama, role_personel_k3, batas_masa_berlaku } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -1731,7 +1742,7 @@ router.put('/updatepersoneljagorawi', (req, res) => {
 });
 
 
-router.put('/updatepersonelcikampek', (req, res) => {
+router.put('/updatepersonelcikampek', authorizeUser, (req, res) => {
     const { personel_k3_id, nama, role_personel_k3, batas_masa_berlaku } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -1753,7 +1764,7 @@ router.put('/updatepersonelcikampek', (req, res) => {
 });
 
 
-router.put('/updatepersonelbali', (req, res) => {
+router.put('/updatepersonelbali', authorizeUser, (req, res) => {
     const { personel_k3_id, nama, role_personel_k3, batas_masa_berlaku } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -1775,7 +1786,7 @@ router.put('/updatepersonelbali', (req, res) => {
 });
 
 
-router.put('/updatepersonelbalsam', (req, res) => {
+router.put('/updatepersonelbalsam', authorizeUser, (req, res) => {
     const { personel_k3_id, nama, role_personel_k3, batas_masa_berlaku } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -1797,7 +1808,7 @@ router.put('/updatepersonelbalsam', (req, res) => {
 });
 
 
-router.put('/updatepersonelbelmera', (req, res) => {
+router.put('/updatepersonelbelmera', authorizeUser, (req, res) => {
     const { personel_k3_id, nama, role_personel_k3, batas_masa_berlaku } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -1822,7 +1833,7 @@ router.put('/updatepersonelbelmera', (req, res) => {
 
 const uploadUPDATE = multer({ storage: multer.memoryStorage() }); // Menggunakan memori untuk menyimpan file sementara
 
-router.put('/updatekejadianjagorawi', uploadUPDATE.single('evidence'), async (req, res) => {
+router.put('/updatekejadianjagorawi', authorizeUser, uploadUPDATE.single('evidence'), async (req, res) => {
     const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file ? req.file.buffer : null; // Ambil file jika ada
 
@@ -1844,7 +1855,7 @@ router.put('/updatekejadianjagorawi', uploadUPDATE.single('evidence'), async (re
 });
 
 
-router.put('/updatekejadiancikampek', uploadUPDATE.single('evidence'), async (req, res) => {
+router.put('/updatekejadiancikampek', authorizeUser, uploadUPDATE.single('evidence'), async (req, res) => {
     const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file ? req.file.buffer : null; // Ambil file jika ada
 
@@ -1866,7 +1877,7 @@ router.put('/updatekejadiancikampek', uploadUPDATE.single('evidence'), async (re
 });
 
 
-router.put('/updatekejadianbali', uploadUPDATE.single('evidence'), async (req, res) => {
+router.put('/updatekejadianbali', authorizeUser, uploadUPDATE.single('evidence'), async (req, res) => {
     const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file ? req.file.buffer : null; // Ambil file jika ada
 
@@ -1888,7 +1899,7 @@ router.put('/updatekejadianbali', uploadUPDATE.single('evidence'), async (req, r
 });
 
 
-router.put('/updatekejadianbalsam', uploadUPDATE.single('evidence'), async (req, res) => {
+router.put('/updatekejadianbalsam', authorizeUser, uploadUPDATE.single('evidence'), async (req, res) => {
     const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file ? req.file.buffer : null; // Ambil file jika ada
 
@@ -1910,7 +1921,7 @@ router.put('/updatekejadianbalsam', uploadUPDATE.single('evidence'), async (req,
 });
 
 
-router.put('/updatekejadianbelmera', uploadUPDATE.single('evidence'), async (req, res) => {
+router.put('/updatekejadianbelmera', authorizeUser, uploadUPDATE.single('evidence'), async (req, res) => {
     const { kejadian_darurat_id, kejadian_darurat, lokasi, kronologi_kejadian, tindak_lanjut } = req.body;
     const evidence = req.file ? req.file.buffer : null; // Ambil file jika ada
 
@@ -1933,7 +1944,7 @@ router.put('/updatekejadianbelmera', uploadUPDATE.single('evidence'), async (req
 
 // Mengupdate data personel berdasarkan kecelakaan_kerja_id
 // Route untuk memperbarui data kecelakaan
-router.put('/updatekecelakaanjagorawi', (req, res) => {
+router.put('/updatekecelakaanjagorawi', authorizeUser, (req, res) => {
     const { kecelakaan_kerja_id, Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -1956,7 +1967,7 @@ router.put('/updatekecelakaanjagorawi', (req, res) => {
 });
 
 
-router.put('/updatekecelakaancikampek', (req, res) => {
+router.put('/updatekecelakaancikampek', authorizeUser, (req, res) => {
     const { kecelakaan_kerja_id, Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -1979,7 +1990,7 @@ router.put('/updatekecelakaancikampek', (req, res) => {
 });
 
 
-router.put('/updatekecelakaanbali', (req, res) => {
+router.put('/updatekecelakaanbali', authorizeUser, (req, res) => {
     const { kecelakaan_kerja_id, Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -2002,7 +2013,7 @@ router.put('/updatekecelakaanbali', (req, res) => {
 });
 
 
-router.put('/updatekecelakaanbalsam', (req, res) => {
+router.put('/updatekecelakaanbalsam', authorizeUser, (req, res) => {
     const { kecelakaan_kerja_id, Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -2025,7 +2036,7 @@ router.put('/updatekecelakaanbalsam', (req, res) => {
 });
 
 
-router.put('/updatekecelakaanbelmera', (req, res) => {
+router.put('/updatekecelakaanbelmera', authorizeUser, (req, res) => {
     const { kecelakaan_kerja_id, Tanggal, NIK, Nama, Jabatan, Ruas, Kronologis, Kategori_Kecelakaan, Tindak_Lanjut, Perawatan_di_RS } = req.body;
 
     // Query untuk memperbarui data berdasarkan ID
@@ -2049,7 +2060,7 @@ router.put('/updatekecelakaanbelmera', (req, res) => {
 
 // Mengupdate data personel berdasarkan data rekap id
 // Update rekap data k3 entry
-router.put('/updaterekapdatajagorawi', (req, res) => {
+router.put('/updaterekapdatajagorawi', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -2152,7 +2163,7 @@ router.put('/updaterekapdatajagorawi', (req, res) => {
 });
 
 
-router.put('/updaterekapdatacikampek', (req, res) => {
+router.put('/updaterekapdatacikampek', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -2255,7 +2266,7 @@ router.put('/updaterekapdatacikampek', (req, res) => {
 });
 
 
-router.put('/updaterekapdatabali', (req, res) => {
+router.put('/updaterekapdatabali', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -2358,7 +2369,7 @@ router.put('/updaterekapdatabali', (req, res) => {
 });
 
 
-router.put('/updaterekapdatabalsam', (req, res) => {
+router.put('/updaterekapdatabalsam', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -2461,7 +2472,7 @@ router.put('/updaterekapdatabalsam', (req, res) => {
 });
 
 
-router.put('/updaterekapdatabelmera', (req, res) => {
+router.put('/updaterekapdatabelmera', authorizeUser, (req, res) => {
     const {
         tahun,
         bulan,
@@ -2566,7 +2577,7 @@ router.put('/updaterekapdatabelmera', (req, res) => {
 
 
 // PUT route to update the organizational structure
-router.put('/updatestrukturjagorawi', (req, res) => {
+router.put('/updatestrukturjagorawi', authorizeUser, (req, res) => {
     const { ketua, sekretaris, anggota1, anggota2, anggota3, anggota4, anggota5 } = req.body;
 
     // SQL query to update the structure
@@ -2596,7 +2607,7 @@ router.put('/updatestrukturjagorawi', (req, res) => {
 });
 
 
-router.put('/updatestrukturcikampek', (req, res) => {
+router.put('/updatestrukturcikampek', authorizeUser, (req, res) => {
     const { ketua, sekretaris, anggota1, anggota2, anggota3, anggota4, anggota5 } = req.body;
 
     // SQL query to update the structure
@@ -2626,7 +2637,7 @@ router.put('/updatestrukturcikampek', (req, res) => {
 });
 
 
-router.put('/updatestrukturbelmera', (req, res) => {
+router.put('/updatestrukturbelmera', authorizeUser, (req, res) => {
     const { ketua, sekretaris, anggota1, anggota2, anggota3, anggota4, anggota5 } = req.body;
 
     // SQL query to update the structure
@@ -2656,7 +2667,7 @@ router.put('/updatestrukturbelmera', (req, res) => {
 });
 
 
-router.put('/updatestrukturbali', (req, res) => {
+router.put('/updatestrukturbali', authorizeUser, (req, res) => {
     const { ketua, sekretaris, anggota1, anggota2, anggota3, anggota4, anggota5 } = req.body;
 
     // SQL query to update the structure
@@ -2687,7 +2698,7 @@ router.put('/updatestrukturbali', (req, res) => {
 
 
 
-router.put('/nullifydatajagorawi', (req, res) => {
+router.put('/nullifydatajagorawi', authorizeUser, (req, res) => {
     const { tahun, bulan } = req.body;
 
     const query = `
@@ -2712,7 +2723,7 @@ router.put('/nullifydatajagorawi', (req, res) => {
 });
 
 
-router.put('/nullifydatacikampek', (req, res) => {
+router.put('/nullifydatacikampek', authorizeUser, (req, res) => {
     const { tahun, bulan } = req.body;
 
     const query = `
@@ -2737,7 +2748,7 @@ router.put('/nullifydatacikampek', (req, res) => {
 });
 
 
-router.put('/nullifydatabali', (req, res) => {
+router.put('/nullifydatabali', authorizeUser, (req, res) => {
     const { tahun, bulan } = req.body;
 
     const query = `
@@ -2762,7 +2773,7 @@ router.put('/nullifydatabali', (req, res) => {
 });
 
 
-router.put('/nullifydatabalsam', (req, res) => {
+router.put('/nullifydatabalsam', authorizeUser, (req, res) => {
     const { tahun, bulan } = req.body;
 
     const query = `
@@ -2788,7 +2799,7 @@ router.put('/nullifydatabalsam', (req, res) => {
 
 
 
-router.put('/nullifydatabelmera', (req, res) => {
+router.put('/nullifydatabelmera', authorizeUser, (req, res) => {
     const { tahun, bulan } = req.body;
 
     const query = `
@@ -2813,7 +2824,7 @@ router.put('/nullifydatabelmera', (req, res) => {
 });
 
 
-router.delete('/deletepersoneljagorawi', (req, res) => {
+router.delete('/deletepersoneljagorawi', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {personel_k3_id} = req.body
@@ -2831,7 +2842,7 @@ router.delete('/deletepersoneljagorawi', (req, res) => {
 });
 
 
-router.delete('/deletepersonelcikampek', (req, res) => {
+router.delete('/deletepersonelcikampek', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {personel_k3_id} = req.body
@@ -2849,7 +2860,7 @@ router.delete('/deletepersonelcikampek', (req, res) => {
 });
 
 
-router.delete('/deletepersonelbali', (req, res) => {
+router.delete('/deletepersonelbali', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {personel_k3_id} = req.body
@@ -2867,7 +2878,7 @@ router.delete('/deletepersonelbali', (req, res) => {
 });
 
 
-router.delete('/deletepersonelbalsam', (req, res) => {
+router.delete('/deletepersonelbalsam', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {personel_k3_id} = req.body
@@ -2885,7 +2896,7 @@ router.delete('/deletepersonelbalsam', (req, res) => {
 });
 
 
-router.delete('/deletepersonelbelmera', (req, res) => {
+router.delete('/deletepersonelbelmera', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {personel_k3_id} = req.body
@@ -2902,7 +2913,7 @@ router.delete('/deletepersonelbelmera', (req, res) => {
     });
 });
 
-router.delete('/deletekecelakaanjagorawi', (req, res) => {
+router.delete('/deletekecelakaanjagorawi', authorizeUser, (req, res) => {
 
     const {kecelakaan_kerja_id} = req.body
     // Lakukan penghapusan data dari database
@@ -2919,7 +2930,7 @@ router.delete('/deletekecelakaanjagorawi', (req, res) => {
 });
 
 
-router.delete('/deletekecelakaancikampek', (req, res) => {
+router.delete('/deletekecelakaancikampek', authorizeUser, (req, res) => {
 
     const {kecelakaan_kerja_id} = req.body
     // Lakukan penghapusan data dari database
@@ -2936,7 +2947,7 @@ router.delete('/deletekecelakaancikampek', (req, res) => {
 });
 
 
-router.delete('/deletekecelakaanbali', (req, res) => {
+router.delete('/deletekecelakaanbali', authorizeUser, (req, res) => {
 
     const {kecelakaan_kerja_id} = req.body
     // Lakukan penghapusan data dari database
@@ -2953,7 +2964,7 @@ router.delete('/deletekecelakaanbali', (req, res) => {
 });
 
 
-router.delete('/deletekecelakaanbalsam', (req, res) => {
+router.delete('/deletekecelakaanbalsam', authorizeUser, (req, res) => {
 
     const {kecelakaan_kerja_id} = req.body
     // Lakukan penghapusan data dari database
@@ -2970,7 +2981,7 @@ router.delete('/deletekecelakaanbalsam', (req, res) => {
 });
 
 
-router.delete('/deletekecelakaanbelmera', (req, res) => {
+router.delete('/deletekecelakaanbelmera', authorizeUser, (req, res) => {
 
     const {kecelakaan_kerja_id} = req.body
     // Lakukan penghapusan data dari database
@@ -2987,7 +2998,7 @@ router.delete('/deletekecelakaanbelmera', (req, res) => {
 });
 
 
-router.delete('/deletekejadianjagorawi', (req, res) => {
+router.delete('/deletekejadianjagorawi', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {kejadian_darurat_id} = req.body
@@ -3005,7 +3016,7 @@ router.delete('/deletekejadianjagorawi', (req, res) => {
 });
 
 
-router.delete('/deletekejadiancikampek', (req, res) => {
+router.delete('/deletekejadiancikampek', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {kejadian_darurat_id} = req.body
@@ -3023,7 +3034,7 @@ router.delete('/deletekejadiancikampek', (req, res) => {
 });
 
 
-router.delete('/deletekejadianbali', (req, res) => {
+router.delete('/deletekejadianbali', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {kejadian_darurat_id} = req.body
@@ -3041,7 +3052,7 @@ router.delete('/deletekejadianbali', (req, res) => {
 });
 
 
-router.delete('/deletekejadianbalsam', (req, res) => {
+router.delete('/deletekejadianbalsam', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {kejadian_darurat_id} = req.body
@@ -3059,7 +3070,7 @@ router.delete('/deletekejadianbalsam', (req, res) => {
 });
 
 
-router.delete('/deletekejadianbelmera', (req, res) => {
+router.delete('/deletekejadianbelmera', authorizeUser, (req, res) => {
     //const no = req.params.id;
 
     const {kejadian_darurat_id} = req.body
@@ -3076,87 +3087,47 @@ router.delete('/deletekejadianbelmera', (req, res) => {
     });
 });
 
-router.post('/login', async (req, res) => {
-    const { ruas, pass_ruas } = req.body;
-    const query = 'SELECT ruas, pass_ruas, userrole FROM akun_ruas WHERE ruas = $1;';
-    
-    db.query(query, [ruas], (err, results) => {
-      if (err) {
-        return res.status(500).send('Internal Server Error');
-      }
-  
-      if (results.rowCount < 1) {
-        return res.status(401).send('Nama Ruas salah'); // Nama tidak ditemukan
-      }
-  
-      const storedPassword = results.rows[0].pass_ruas;
-      const userRole = results.rows[0].userrole;
-  
-      if (pass_ruas === storedPassword) {
-        if (userRole === 'admin' || userRole === 'user') {
-          // Set session setelah login berhasil
-          req.session.userRole = userRole;
-          req.session.ruas = ruas;
-          req.session.isLoggedIn = true; // Tandai bahwa user telah login
-          
-          return res.status(200).json({
-              message: "Login successful",
-              showItems: results.rows
-          });
-        } else {
-          return res.status(401).send('Hanya user dan admin yang dapat login');
-        }
-      } else {
-        return res.status(401).send('Password salah');
-      }
-    });
-});
 
-
+// Route untuk login dengan session
 router.post('/login-encrypt', async (req, res) => {
     const { ruas, pass_ruas } = req.body;
     const query = 'SELECT ruas, pass_ruas, userrole FROM akun_ruas WHERE ruas = $1;';
-    
-    db.query(query, [ruas], async (err, results) => {
-      if (err) {
-        return res.status(500).send('Internal Server Error');
-      }
-  
-      if (results.rowCount < 1) {
-        return res.status(401).send('Nama Ruas salah'); // Nama tidak ditemukan
-      }
-  
-      const storedPassword = results.rows[0].pass_ruas;
-      const userRole = results.rows[0].userrole;
-      
-      console.log("Ruas:", ruas);
-console.log("Password input:", pass_ruas);
-console.log("Stored Password:", storedPassword);
 
-      // Membandingkan password menggunakan bcrypt
-      const isMatch = await bcrypt.compare(pass_ruas, storedPassword);
-      if (isMatch) {
-        if (userRole && ['admin', 'user'].includes(userRole.toLowerCase())) {
-          // Set session setelah login berhasil
-          req.session.userRole = userRole;
-          req.session.ruas = ruas;
-          req.session.isLoggedIn = true; // Tandai bahwa user telah login
-          
-          return res.status(200).json({
-              message: "Login successful",
-              showItems: results.rows
-          });
-        } else {
-          return res.status(401).send('Hanya user dan admin yang dapat login');
+    try {
+        const results = await db.query(query, [ruas]);
+
+        if (results.rowCount < 1) {
+            return res.status(401).json({ message: 'Nama Ruas salah', showItems: [] });
         }
+
+        const { pass_ruas: storedPassword, userrole: userRole } = results.rows[0];
+
+        const isMatch = await bcrypt.compare(pass_ruas, storedPassword);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Password salah', showItems: [] });
+        }
+
+        if (!userRole || !['admin', 'user'].includes(userRole.toLowerCase())) {
+            return res.status(401).json({ message: 'Hanya user dan admin yang dapat login', showItems: [] });
+        }
+
+        // Set session after successful login
+        req.session.userRole = userRole.toLowerCase();
+        req.session.ruas = ruas;
+        req.session.isLoggedIn = true;
         
-      } else {
-        return res.status(401).send('Password salah');
-        
-      }
-      
-    });
+        return res.status(200).json({
+            message: "Login successful",
+            showItems: results.rows
+        });
+
+    } catch (err) {
+        console.error('Database error:', err);
+        return res.status(500).json({ message: 'Internal Server Error', showItems: [] });
+    }
 });
+
+
 
 
 // Route register
@@ -3192,13 +3163,7 @@ router.post('/logout', (req, res) => {
 });
 
 
-
-
-
-
-
-
-router.get('/admin/data/rekap_data_k3/summary', async (req, res) => {
+router.get('/admin/data/rekap_data_k3/summary', authorizeAdmin, async (req, res) => {
     const { tahun } = req.query; // Get the 'tahun' parameter from the request query
 
     // Validate the tahun parameter
@@ -3319,12 +3284,22 @@ router.get('/admin/data/rekap_data_k3/summary', async (req, res) => {
 });
 
 
-
-
-app.get('/session', (req, res) => {
-    const sessionData = req.session;
-    res.json(sessionData);
+router.get('/session', (req, res) => {
+    if (req.session.userRole && req.session.ruas) {
+        // Jika session aktif, kirim data session
+        res.json({
+            message: "Session aktif",
+            sessionData: req.session
+        });
+    } else {
+        // Jika tidak ada session, kirim respons bahwa session tidak aktif
+        res.json({
+            message: "Tidak ada session yang aktif",
+            sessionData: null
+        });
+    }
 });
+
 
 app.use('/', router);
 
